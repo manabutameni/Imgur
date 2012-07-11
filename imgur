@@ -3,7 +3,7 @@ gallery_url=$1
 LFS='/'
 
 httblah() {
-  curl -s $setting "$gallery_url" | grep 'data-src' | cut -d \" -f10 > temp
+  curl "$gallery_url" | grep 'data-src' | cut -d \" -f10 > temp
   sed '/^$/d' temp > x
   sed 's/s.jpg/.jpg/' x > temp
   cat temp | while read line; do n=$((++n)) && curl $line >> "$n.jpg"; done 
@@ -16,8 +16,8 @@ then
 
   if [ ${gallery_url:0:5} == "https" ]
   then
-    echo "Using https..."
-    setting="--no-check-certificate"
+    echo "Converting https..."
+    gallery_url=${gallery_url:8}
   elif [[ ${gallery_url:0:4} == "http" || ${gallery_url:0:5} == "imgur" ]]
   then
     echo "Using http..."
