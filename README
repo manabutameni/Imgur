@@ -5,7 +5,7 @@ This is a quick bash script I wrote to download an entire imgur album while keep
 
 USAGE
 
-The script was created to differentiate between http:// and https:// traffic so all that you need to do is copy+paste the address bar link into the terminal.
+The script was created so that all that you need to do is copy+paste the address bar link into the terminal.
 
 chmod +x imgur
 ./imgur https://www.imgur.com/a/qwerty
