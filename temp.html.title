@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+				<meta name="robots" content="index,nofollow"/>
+	
+	<meta name="keywords" content="images, funny pictures, image host, image upload, image sharing, image resize" />
+	<meta name="description" content="Imgur is used to share photos with social networks and online communities, and has the funniest pictures from all over the Internet." />
+	<meta http-equiv="X-UA-Compatible" content="IE=9;IE=8;" />
+	<!--[if lt IE 9]>
+		<meta http-equiv="cache-control" content="no-cache">
+		<meta http-equiv="pragma" content="no-cache">
+	<![endif]-->
+	<title>			Illustrations - Imgur
+	</title>
+	<link rel="icon" href="//imgur.com/include/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="//imgur.com/include/favicon.ico" type="image/x-icon" />
+	<link rel="alternate" type="application/rss+xml" title="Imgur Gallery" href="http://feeds.feedburner.com/ImgurGallery?format=xml" />
+	<link rel="stylesheet" href="http://s.imgur.com/min/global_css?10" type="text/css" />
+			<link rel="icon" href="http://s.imgur.com/include/favicon.ico" type="image/x-icon" />
+		<link rel="shortcut icon" href="http://s.imgur.com/include/favicon.ico" type="image/x-icon" />
+	
+		<meta name="twitter:card" value="photo"/>
+    <meta name="twitter:site" value="@imgur"/>
+    <meta name="twitter:url" value="http://imgur.com/a/vw7Q1"/>
+
+    		<meta name="twitter:title" value="Illustrations"/>
+	
+
+			<link rel="image_src" href="http://i.imgur.com/gr7xd"/>
+		<meta name="twitter:image" value="http://i.imgur.com/gr7xd"/>
+	
+
+	<link rel="stylesheet" href="http://s.imgur.com/min/album_css?27" type="text/css"/>
+			<!--[if IE 9]><link rel="stylesheet" href="http://s.imgur.com/include/css/ie-sucks.css?0" type="text/css" /><![endif]-->
+	
+				<noscript>
+			<meta http-equiv="refresh" content="0; url=/a/vw7Q1/noscript"/>
+		</noscript>
+	
+</head>
+<body>
+	    <div id="topbar">
+      <div class="left">
+        <ul>
+          <li><a href="http://imgur.com/gallery">gallery</a></li>
+        </ul>
+      </div>
+
+      <div class="right">
+                <ul>
+          <li><a class="dot" href="https://imgur.com/signin">sign in</a></li><li><a href="https://imgur.com/register">register</a></li>
+        </ul>
+        
+      </div>
+
+    </div>
+		
+		<div id="underbar" class="clear"></div>
+	
+
+	
+
+	<div class="nodisplay">
+		Imgur is used to share photos with social networks and online
+		communities, and has the funniest pictures from all over the Internet.
+	</div>
+
+		<div id="header">
+		<div class="left">
+			<a href="/">
+				<img alt="the simple image sharer" src="http://s.imgur.com/images/imgur-small.gif" />
+			</a>
+		</div>
+
+		<h1 style="">Illustrations</h1>
+
+		<div class="clear"></div>
+	</div>
+
+	<div id="content" class="horizontal two-column">
+		<div id="top-message"></div>
+
+		
+
+		
+
+				<div class="panel thumbs">
+			<div class="thumbs-carousel">
+				<div class="carousel-button prev disabled">
+					<div></div>
+				</div>
+
+				<div class="thumbs-wrapper">
+					<div id="thumbs-top" class="jcarousel">
+						<ul>
+							
+															<li>
+									<img id="thumb-7JyaV" class="unloaded thumb-title" title="" alt="" data-src="http://i.imgur.com/7JyaVs.jpg" data-index="0" />
+								</li>
+								
+															<li>
+									<img id="thumb-9YZRl" class="unloaded thumb-title" title="" alt="" data-src="http://i.imgur.com/9YZRls.jpg" data-index="1" />
+								</li>
+								
+															<li>
+									<img id="thumb-CjHFL" class="unloaded thumb-title" title="" alt="" data-src="http://i.imgur.com/CjHFLs.jpg" data-index="2" />
+								</li>
+								
+															<li>
+									<img id="thumb-FIgiN" class="unloaded thumb-title" title="" alt="" data-src="http://i.imgur.com/FIgiNs.jpg" data-index="3" />
+								</li>
+								
+															<li>
+									<img id="thumb-gr7xd" class="unloaded thumb-title" title="" alt="" data-src="http://i.imgur.com/gr7xds.jpg" data-index="4" />
+								</li>
+								
+															<li>
+									<img id="thumb-NizHn" class="unloaded thumb-title" title="" alt="" data-src="http://i.imgur.com/NizHns.jpg" data-index="5" />
+								</li>
+								
+							
+						</ul>
+					</div>
+				</div>
+
+				<div class="carousel-button next">
+					<div></div>
+				</div>
+
+				<div class="clear"></div>
+			</div>
+		</div>
+		
+
+		<div class="image panel">
+							<h2 id="title"></h2>
+
+				<div id="image-container" class="jcarousel main-carousel">
+					<div class="image-hover action-button combobox left" title="Actions">
+    <div class="options">
+        <div class="item view album-view-image-link">
+            <a href="http://i.imgur.com/NizHn.png" target="_blank">View full resolution</a>
+		</div>
+        <div class="item download album-download-full-resolution">
+            <a href="/download/NizHn">Download full resolution</a>
+        </div>
+	</div>
+</div>
+
+
+					<div id="prev" class="nav-button prev">
+						<span>&laquo; prev</span>
+					</div>
+
+					<div id="next" class="nav-button next">
+						<span>next &raquo;</span>
+					</div>
+
+					<img id="image" />
+				</div>
+
+				<div id="description" class="description textbox"></div>
+			
+		</div>
+
+		<div class="info">
+			<div class="panel">
+				<div>
+					<div class="count textbox">
+						Image <span class="stat" id="current-index">0</span> of <span class="stat">6</span>
+
+						<div class="right">
+							<a href="//imgur.com/a/vw7Q1/all">all</a>
+						</div>
+
+						<div class="clear"></div>
+					</div>
+
+					<div class="author textbox">
+						<div class="left">
+															By <a href="//everetthiller.imgur.com">everetthiller</a> &middot;
+							
+
+							<span title="Thu Dec 2 23:01:37 2010 GMT">2 years ago</span> &middot;
+							<span class="stat">27,871</span> views
+						</div>
+
+						<div class="userActionLinks">
+															<div class="chooselayout">
+									<a href="javascript:;" class="album-settings-link">Switch album layout</a>
+								</div>
+							
+							<div class="embedthis">
+								<a class="album-embed-link" href="javascript:;">Embed this album</a>
+							</div>
+						</div>
+					</div>
+
+					<div class="icons textbox">
+						<div id="social" class="social">
+	<ul>
+		<li class="title" title="Share on Twitter">
+			<span class="twitter_custom"></span>
+		</li>
+		<li class="title" title="Share on Facebook">
+			<span class="facebook_custom"></span>
+		</li>
+		<li class="title" title="Share on Reddit">
+			<span class="reddit_custom"></span>
+		</li>
+		<li class="title" title="Share on Tumblr">
+			<span class="tumblr_custom"></span>
+		</li>
+		<li class="title" title="Share on Stumble Upon">
+			<span class="stumbleupon_custom"></span>
+		</li>
+		<li class="title" title="Share over email">
+			<a href="javascript:;" class="addthis_button_email"><span class="st_email_custom"></span></a>
+		</li>
+		<li class="title" title="More sharing options">
+			<span class="addthis_button st_sharethis_custom"><span></span></span>
+		</li>
+	</ul>
+</div>
+
+					</div>
+
+					<div class="clear"></div>
+				</div>
+
+				
+			</div>
+		</div>
+	</div>
+		<div id="album-vw7Q1" class="nodisplay" data-title="Illustrations" data-cover="gr7xd" data-layout="h" data-privacy="0" data-description=""></div>
+	<div class="nodisplay">
+	<div id="embed-album-form" class="popup">
+		<h1>Embed this album</h1>
+		
+		<div class="textbox">
+			Copy and paste the HTML below into your website:
+		</div>
+		
+		<div>
+			<div class="clipboard-container" id="embedcode-container" title="copy">
+				<div class="clipboard" id="embedcode-clipboard"></div>
+			</div>
+			<input id="embedcode" type="text" value="" />
+		</div>
+	</div>
+</div>
+
+			<div class="nodisplay">
+			<div id="create-album-form" class="popup">
+				<form id='userLayoutForm'>
+					<h1></h1>
+					<div class="textbox">
+						<table id="album-layout">
+	<tr>
+		<td class="center" width="10%">
+			<label for="blog">
+				<img class="title" src="http://s.imgur.com/images/album-layout-blog.png" alt="Blog Layout" title="<h1>Blog Layout</h1>Shows all the images on one page in a blog post style layout. Best for albums with a small to medium amount of images." />
+			</label>
+		</td>
+		
+		<td class="center" width="30%">
+			<label for="vertical">
+				<img class="title" src="http://s.imgur.com/images/album-layout-vertical.png" alt="Vertical Layout" title="<h1>Vertical Layout</h1>Shows one image at a time in a traditional style, with thumbnails to the right. Good for almost any album." />
+			</label>
+		</td>
+		
+		<td class="center" width="30%">
+			<label for="horizontal">
+				<img class="title" src="http://s.imgur.com/images/album-layout-horizontal.png" alt="Horizontal Layout" title="<h1>Horizontal Layout</h1>Shows one image in high resolution at a time, with thumbnails on top. Best for albums that have high resolution photos." />
+			</label>
+		</td>
+		
+		<td class="center" width="30%">
+			<label for="grid">
+				<img class="title" src="http://s.imgur.com/images/album-layout-grid.png" alt="Grid Layout" title="<h1>Grid Layout</h1>Shows all the images on one page as thumbnails that expand when clicked on. Best for albums with lots of images." />
+			</label>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="center">
+			<input class="title" id="blog" type="radio" name="layout" value="b" id="blog" title="<h1>Blog Layout</h1>Shows all the images on one page in a blog post style layout. Best for albums with a small to medium amount of images." />
+		</td>
+		
+		<td class="center">
+			<input class="title" id="vertical" type="radio" name="layout" value="v" id="vertical" title="<h1>Vertical Layout</h1>Shows one image at a time in a traditional style, with thumbnails to the right. Good for almost any album." />
+		</td>
+		
+		<td class="center">
+			<input class="title" id="horizontal" type="radio" name="layout" value="h" id="horizontal" title="<h1>Horizontal Layout</h1>Shows one image in high resolution at a time, with thumbnails on top. Best for albums that have high resolution photos." />
+		</td>
+		
+		<td class="center">
+			<input class="title" id="grid" type="radio" name="layout" value="g" id="grid" title="<h1>Grid Layout</h1>Shows all the images on one page as thumbnails that expand when clicked on. Best for albums with lots of images." />
+		</td>
+	</tr>
+</table>
+					</div>
+					<div>
+						<div class="left">
+							<input type="submit" tabindex="4" class="button-medium userSessionLayout" value="Save" />
+						</div>
+
+						<div class="left">
+							<div class="small-loader" id="create-album-loader"></div>
+						</div>
+
+						<div class="clear"></div>
+					</div>
+				</form>
+			</div>
+		</div>
+	
+
+			<div id="footer">
+				<div id="copyright">© 2012 Imgur, LLC.</div>
+
+
+<div id="footer-links">
+	
+	<a href="http://imgur.com/blog/" class="title" title="the simple imgur blog">blog <span class="new">new post!</span></a>
+	<a href="http://imgur.com/stats" class="title" title="view site statistics">site stats</a>
+	<a href="http://imgur.com/apps" class="title" title="uploading apps">apps</a>
+	<a href="http://imgur.userecho.com/" class="title" title="have something to say?">feedback</a>
+	<a href="http://imgur.com/faq" class="title" title="have a question?">faq</a>
+	<a href="http://imgur.com/removalrequest" class="title" title="submit an image removal request">request deletion</a>
+	<a href="http://imgur.com/contact" class="title" title="contact imgur">contact</a>
+	<a href="http://imgur.com/tos" class="title" title="terms of service">terms</a>
+			<a href="http://imgur.com/register/upgrade" class="title" title="imgur pro">go pro</a>
+	
+	<a href="http://api.imgur.com" class="title" title="the imgur API">api</a>
+</div>
+
+<div class="clear"></div>
+
+		</div>
+	
+
+	
+
+	<script type="text/javascript" src="http://s.imgur.com/min/global_js?48"></script>
+	<script type="text/javascript">
+        var imgur = Imgur.getInstance();
+        imgur.init({
+            host: 'imgur.com',
+            cdn_url: 'http://i.imgur.com',
+            signed: false
+        });
+
+        imgur.generalInit();
+	</script>
+
+		
+	<script type="text/javascript" src="http://s.imgur.com/min/album_js?60"></script>
+	<script type="text/javascript">
+		var album = new ImgurAlbum({
+			id: 'vw7Q1',
+			images: {"count":6,"items":[{"hash":"7JyaV","title":"","description":"","width":1481,"height":966,"size":345787,"ext":".png","animated":0,"datetime":"2011-05-20 12:18:03"},{"hash":"9YZRl","title":"","description":"","width":720,"height":365,"size":80937,"ext":".jpg","animated":0,"datetime":"2011-05-20 12:17:56"},{"hash":"CjHFL","title":"","description":"","width":1919,"height":1279,"size":424120,"ext":".jpg","animated":0,"datetime":"2010-12-03 15:46:46"},{"hash":"FIgiN","title":"","description":"","width":1980,"height":2970,"size":357858,"ext":".jpg","animated":0,"datetime":"2010-12-02 23:02:28"},{"hash":"gr7xd","title":"","description":"","width":1700,"height":2200,"size":190992,"ext":".jpg","animated":0,"datetime":"2010-12-02 23:02:14"},{"hash":"NizHn","title":"","description":"","width":1560,"height":678,"size":21879,"ext":".png","animated":0,"datetime":"2011-05-20 13:15:51"}]},
+			cover: '',
+			layout: 'h',
+			operation: ''
+		});
+
+		album.init();
+	</script>
+
+	
+
+			<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-6671908-2']);
+			_gaq.push(['_setDomainName', 'none']);
+			_gaq.push(['_trackPageview']);
+			_gaq.push(['_trackPageLoadTime']);
+
+			(function() {
+			  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : '//www') + '.google-analytics.com/ga.js';
+			  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+
+		<script type='text/javascript'>
+			var _qevents = _qevents || [];
+			(function() {
+			var elem = document.createElement('script');
+			elem.src = (document.location.protocol == "https:" ? "https://secure" : "//edge") + ".quantserve.com/quant.js";
+			elem.async = true;
+			elem.type = "text/javascript";
+			var scpt = document.getElementsByTagName('script')[0];
+			scpt.parentNode.insertBefore(elem, scpt);
+			})();
+
+			_qevents.push({
+				qacct:"p-f8oruOqDFlMeI"
+			});
+		</script>
+
+		<noscript>
+			<div class="nodisplay">
+				<img src="//pixel.quantserve.com/pixel/p-f8oruOqDFlMeI.gif" border="0" height="1" width="1" alt="Quantcast"/>
+			</div>
+		</noscript>
+
+		
+
+					<script type="text/javascript" src="http://tap-cdn.rubiconproject.com/partner/scripts/rubicon/alice.js?pc=8526/13802"></script>
+			<script type='text/javascript' src='http://static.fmpub.net/site/imgur'></script>
+		
+	
+
+	
+</body>
+</html>

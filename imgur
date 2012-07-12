@@ -1,34 +1,43 @@
 #!/bin/bash
 gallery_url=$1
-LFS='/'
-
-httblah() {
-  curl "$gallery_url" | grep 'data-src' | cut -d \" -f10 > temp
-  sed '/^$/d' temp > x
-  sed 's/s.jpg/.jpg/' x > temp
-  cat temp | while read line; do n=$((++n)) && curl $line >> "$n.jpg"; done 
-  rm x temp
-  return 0
-}
+http_proxy=""
 
 if [ -n "$1" ]  #  If command-line argument present,
 then
 
-  if [ ${gallery_url:0:5} == "https" ]
+  if [[ "$1" =~ "imgur.com" ]]
   then
-    echo "Converting https..."
-    gallery_url=${gallery_url:8}
-  elif [[ ${gallery_url:0:4} == "http" || ${gallery_url:0:5} == "imgur" ]]
-  then
-    echo "Using http..."
-    setting=""
+
+    i=0
+    curl $1 > temp.html
+    album_title=`cat temp.html | grep "h1 style"`
+
+    echo $album_title
+
+    if [[ ${#album_title} == 18 ]]
+    then
+      album_title=${1:(-5)}
+    else
+      album_title=$(echo $album_title | sed -e 's/<[^>][^>]*>//g' -e '/^ *$/d')
+    fi
+
+    mkdir -p $album_title
+    mv temp.html $album_title
+    cd $album_title
+    for image in $(cat temp.html | awk -F\" '/View full resolution/{ print $2 }')
+    do
+      let i=$i+1;
+      curl $image > $i.jpg
+    done
+
   else
-    echo "Invalid entry"
+    echo -e "\nImgur albums only\n"
     exit
   fi
 
-  eval httblah
+  rm temp.html
 
 else
-  echo -e "\nYou need to enter a parameter. Such as \nhttps://www.imgur.com/a/qwerty\n"
+  echo -e "\nYou need to enter a parameter. Such as \
+    \nhttps://www.imgur.com/a/qwerty\n"
 fi
