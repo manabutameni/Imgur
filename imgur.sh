@@ -9,10 +9,8 @@ then
   then
 
     i=0
-    curl $1 > temp.html
+    curl -s $1 > temp.html
     album_title=`cat temp.html | grep "h1 style"`
-
-    echo $album_title
 
     if [[ ${#album_title} == 18 ]]
     then
@@ -24,7 +22,7 @@ then
     mkdir -p $album_title
     mv temp.html $album_title
     cd $album_title
-    for image in $(cat temp.html | awk -F\" '/View full resolution/{ print $2 }')
+    for image in $(cat temp.html | awk -F\" '/data-src/ { print $10 }')
     do
       let i=$i+1;
       curl $image > $i.jpg
