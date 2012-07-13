@@ -1,7 +1,7 @@
 #!/bin/bash
 gallery_url=$1
 tempname=`basename $0`
-tempfile=`mktemp -t ${tempname}` || exit 1
+tempfile=`mktemp -t ${tempname}.XXXXX` || exit 1
 
 if [ -n "$gallery_url" ]  #  If command-line argument present,
 then
