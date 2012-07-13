@@ -13,8 +13,12 @@ then
     curl -s $gallery_url > $tempfile
     album_title=`grep "h1 style" $tempfile`
 
-    if [[ ${#album_title} == 18 ]]
+    if [ ${#album_title} -le 18 ]
     then
+      if [ ${#album_title} -eq 0 ]
+      then
+        echo -e "\nImgur album has been deleted\n"
+      fi
       album_title=${gallery_url:(-5)}
     else
       album_title=$(echo "$album_title" | sed -e 's/<[^>][^>]*>//g' -e '/^ *$/d')
