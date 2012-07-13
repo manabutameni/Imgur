@@ -17,7 +17,7 @@ then
     then
       album_title=${gallery_url:(-5)}
     else
-      album_title=$(echo "$album_title" | sed -e 's/<[^>]+>//g')
+      album_title=$(echo "$album_title" | sed -e 's/<[^>][^>]*>//g' -e '/^ *$/d')
     fi
 
     mkdir -p "$album_title"
