@@ -17,14 +17,14 @@ then
     then
       album_title=${gallery_url:(-5)}
     else
-      album_title=$(echo $album_title | sed -e 's/<[^>][^>]*>//g' -e '/^ *$/d')
+      album_title=$(echo "$album_title" | sed -e 's/<[^>]+>//g')
     fi
 
-    mkdir -p $album_title
+    mkdir -p "$album_title"
     for image in $(awk -F\" '/data-src/ { print $10 }' $tempfile)
     do
       let i=$i+1;
-      curl $image > $album_title/$i.jpg
+      curl $image > "$album_title"/$i.jpg
     done
 
   else
