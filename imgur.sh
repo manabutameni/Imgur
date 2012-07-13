@@ -18,6 +18,7 @@ then
       if [ ${#album_title} -eq 0 ]
       then
         echo -e "\nImgur album has been deleted\n"
+        exit 1
       fi
       album_title=${gallery_url:(-5)}
     else
