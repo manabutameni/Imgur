@@ -1,4 +1,13 @@
 #!/bin/bash
+
+#=======================================#
+# All rights reserved.                  #
+# Licensed under GNU                    #
+# http://www.gnu.org/copyleft/gpl.html  #
+# Author's github.                      #
+# https://github.com/manabutameni/Imgur #
+#=======================================#
+
 gallery_url=$1
 tempname=`basename $0`
 tempfile=`mktemp -t ${tempname}.XXXXX` || exit 1
