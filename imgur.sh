@@ -24,7 +24,7 @@ then
     CLEAN=${CLEAN// /_}
     CLEAN=${CLEAN//[^a-zA-Z0-9_]/}
     CLEAN=`echo -n $CLEAN | tr A-Z a-z`
-    album_title=$CLEAN
+    album_title=${CLEAN%?}
 
     if [ ${#album_title} -eq 0 ]
     then
