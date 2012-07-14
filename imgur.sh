@@ -27,6 +27,9 @@ then
         album_title=${gallery_url:(-7)}
         album_title=${album_title:0:5}
       fi
+    elif [[ "$album_title" =~ '/' ]]
+    then
+      album_title=`echo $album_title | sed 's/\//-/'`
     fi
 
     mkdir -p "$album_title"
