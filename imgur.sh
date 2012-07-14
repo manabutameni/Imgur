@@ -22,6 +22,11 @@ then
     if [ ${#album_title} -eq 0 ]
     then
       album_title=${gallery_url:(-5)}
+      if [[ "$album_title" =~ "#" ]]
+      then
+        album_title=${gallery_url:(-7)}
+        album_title=${album_title:0:5}
+      fi
     fi
 
     mkdir -p "$album_title"
