@@ -20,8 +20,7 @@ then
     fi
 
     mkdir -p "$album_title"
-    for image in $(awk -F\" '/data-src/ { print $10 } ' $tempfile |\ 
-      sed '/^$/d' | sed 's/s.jpg/.jpg/')
+    for image in $(awk -F\" '/data-src/ { print $10 } ' $tempfile | sed '/^$/d' | sed 's/s.jpg/.jpg/')
     do
       let i=$i+1;
       curl $image > "$album_title"/$i.jpg
