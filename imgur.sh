@@ -19,6 +19,12 @@ then
 
     album_title=`awk -F\" '/data-title/ { print $6 }' $tempfile | head -1`
 
+    #Sanitize $album_title
+    CLEAN=${album_title//_/}
+    CLEAN=${CLEAN// /_}
+    CLEAN=${CLEAN//[^a-zA-Z0-9_]/}
+    CLEAN=`echo -n $CLEAN | tr A-Z a-z`
+
     if [ ${#album_title} -eq 0 ]
     then
       album_title=${gallery_url:(-5)}
