@@ -22,9 +22,15 @@ then
     #Sanitize $album_title
     CLEAN=${album_title//_/}
     CLEAN=${CLEAN// /_}
-    CLEAN=${CLEAN//[^a-zA-Z0-9_]/}
-    CLEAN=`echo -n $CLEAN | tr A-Z a-z`
-    album_title=${CLEAN%?}
+    #The following was kept for possible future applications
+    #CLEAN=${CLEAN//[^a-zA-Z0-9_]/}
+    #CLEAN=`echo -n $CLEAN | tr A-Z a-z`
+    if [[ "${album_title:(-1)}" == " " ]]
+    then
+      album_title=${CLEAN%?}
+    else
+      album_title=$CLEAN
+    fi
 
     if [ ${#album_title} -eq 0 ]
     then
