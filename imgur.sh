@@ -1,8 +1,6 @@
 #!/bin/bash
 
 #=======================================#
-# All rights reserved.                  #
-# Author's github.                      #
 # https://github.com/manabutameni/Imgur #
 #=======================================#
 
