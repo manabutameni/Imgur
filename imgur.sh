@@ -2,8 +2,6 @@
 
 #=======================================#
 # All rights reserved.                  #
-# Licensed under GNU                    #
-# http://www.gnu.org/copyleft/gpl.html  #
 # Author's github.                      #
 # https://github.com/manabutameni/Imgur #
 #=======================================#
