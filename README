@@ -29,7 +29,8 @@ chmod +x imgur.sh
 
 This is only if you want to reference the script without having it in the directory you want the imgur album.
 
-mkdir -p /usr/local/bin 
+sudo mkdir -p /usr/local/bin 
+sudo chown `whoami` /usr/local/bin
 cd /usr/local/bin
 curl -O https://raw.github.com/manabutameni/Imgur/master/imgur.sh
 mv imgur.sh imgur
