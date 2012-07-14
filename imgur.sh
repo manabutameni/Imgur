@@ -26,7 +26,8 @@ then
     fi
 
     mkdir -p "$album_title"
-    for image in $(awk -F\" '/data-src/ { print $10 }' $tempfile)
+    for image in $(curl http://imgur.com/a/92hze |\
+          awk -F\" '/View full resolution/ { print $2 } ' $tempfile)
     do
       let i=$i+1;
       curl $image > "$album_title"/$i.jpg
