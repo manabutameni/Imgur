@@ -1,30 +1,41 @@
-ABOUT
++-----+
+|ABOUT|
++-----+
 
-This is a quick bash script I wrote to download an entire imgur album while keeping the order of the images as they appear on the album. I did this by renaming the file so if you still want to reference the original imgur album I would recommend bookmarking it somehow.
+This is a quick bash script I wrote to download an entire imgur album while keeping the order of the images as they appear on the album and placing them into a nice folder based on the name of the folder. 
+I did this by renaming the files themselves so if you still want to reference the original imgur album I would recommend bookmarking it somehow.
 
 Thanks to everyone in this thread who helped me out.
 http://redd.it/webn1
-Special Thanks goes to Reddit users Ihasn and Skaarj
+Special Thanks goes to Reddit users Ihasn and Skaarj.
 
 Compatible with:
-Linux
-Unix
-OS X
+  Linux
+  Unix
+  OS X
 
-USAGE
++-----+
+|USAGE|
++-----+
 
 The script was created so that all that you need to do is copy+paste the address bar link into the terminal.
 
-chmod +x imgur
-./imgur https://www.imgur.com/a/qwerty
+chmod +x imgur.sh
+./imgur.sh https://www.imgur.com/a/XXXXX
 
-INSTALLATION
++------------+
+|INSTALLATION|
++------------+
 
 This is only if you want to reference the script without having it in the directory you want the imgur album.
 
 mkdir -p /usr/local/bin 
 cd /usr/local/bin
 curl -O https://raw.github.com/manabutameni/Imgur/master/imgur.sh
+mv imgur.sh imgur
 chmod +x imgur
 PATH=$PATH:/usr/local/bin # only if you haven't done this already
 export PATH
+
+To use:
+imgur https://www.imgur.com/a/XXXXX
