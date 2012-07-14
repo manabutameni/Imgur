@@ -20,7 +20,7 @@ This is only if you want to reference the script without having it in the direct
 
 mkdir -p /usr/local/bin 
 cd /usr/local/bin
-curl -O https://raw.github.com/manabutameni/Imgur/master/imgur
+curl -O https://raw.github.com/manabutameni/Imgur/master/imgur.sh
 chmod +x imgur
 PATH=$PATH:/usr/local/bin # only if you haven't done this already
 export PATH
