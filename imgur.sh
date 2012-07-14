@@ -11,23 +11,17 @@ then
 
     i=0
     curl -s $gallery_url > $tempfile
-    album_title=`grep "h1 style" $tempfile`
 
-    if [ ${#album_title} -le 18 ]
+    album_title=`awk -F\" '/data-title/ { print $6 }' $tempfile | head -1`
+
+    if [ ${#album_title} -eq 0 ]
     then
-      if [ ${#album_title} -eq 0 ]
-      then
-        echo -e "\nImgur album has been deleted\n"
-        exit 1
-      fi
       album_title=${gallery_url:(-5)}
-    else
-      album_title=$(echo "$album_title" | sed -e 's/<[^>][^>]*>//g' -e '/^ *$/d')
     fi
 
     mkdir -p "$album_title"
-    for image in $(curl $gallery_url |\
-          awk -F\" '/View full resolution/ { print $2 } ' $tempfile)
+    for image in $(awk -F\" '/data-src/ { print $10 } ' $tempfile |\ 
+      sed '/^$/d' | sed 's/s.jpg/.jpg/')
     do
       let i=$i+1;
       curl $image > "$album_title"/$i.jpg
