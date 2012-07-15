@@ -2,8 +2,19 @@
 |ABOUT|
 +-----+
 
-This is a quick bash script I wrote to download an entire imgur album while keeping the order of the images as they appear on the album and placing them into a nice folder based on the name of the folder. 
-I did this by renaming the files themselves so if you still want to reference the original imgur album I would recommend bookmarking it somehow.
+This is a 100% Bash script used to download imgur albums while making sure that
+the order of the pictures is retained. The script now allows for multi-file
+support. E.X. ./imgur -m List-Of-Imgur-Album-URLs-seperated-by-newlines.txt
+
+  usage: ./imgur.sh [-cpsm] [file] URL
+  This script is used solely to download imgur albums.
+
+  OPTIONS:
+    -h        Show this message.
+    -m <File> Download multiple albums found in <File>.
+    -c        Clean and Remove nonalphanumeric characters from the album's name.
+    -p        Preserve imgur's naming. (Warning! This will not retain order.)
+    -s        Silent mode.
 
 Thanks to everyone in this thread who helped me out.
 http://redd.it/webn1
@@ -18,10 +29,11 @@ Compatible with:
 |USAGE|
 +-----+
 
-The script was created so that all that you need to do is copy+paste the address bar link into the terminal.
+The script was created so that all that you need to do is copy+paste 
+the address bar link into the terminal.
 
 chmod +x imgur.sh
-./imgur.sh https://www.imgur.com/a/XXXXX
+./imgur.sh -h
 
 +------------+
 |INSTALLATION|
@@ -32,11 +44,11 @@ This is only if you want to reference the script without having it in the direct
 sudo mkdir -p /usr/local/bin 
 sudo chown `whoami` /usr/local/bin
 cd /usr/local/bin
-curl -O https://raw.github.com/manabutameni/Imgur/master/imgur.sh
+curl -O http://raw.github.com/manabutameni/Imgur/master/imgur.sh
 mv imgur.sh imgur
 chmod +x imgur
 PATH=$PATH:/usr/local/bin # only if you haven't done this already
 export PATH
 
 To use:
-imgur https://www.imgur.com/a/XXXXX
+imgur http://www.imgur.com/a/XXXXX
