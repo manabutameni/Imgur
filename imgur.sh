@@ -5,7 +5,7 @@ gallery_url=""
 multiple_files=false
 extra_clean=false
 preserve=false
-curl_args=" "
+curl_args=""
 tempname=`basename $0`
 tempfile=`mktemp -t ${tempname}.XXXXX` || exit 1
 
@@ -13,7 +13,7 @@ usage()
 {
   cat << EOF
 
-  usage: ./imgur-devel.sh [-cpsm] [file] URL
+  usage: ./imgur.sh [-cpsm] [file] URL
   This script is used solely to download imgur albums.
 
   OPTIONS:
@@ -34,7 +34,7 @@ download()
   then
 
     i=0 
-    curl$curl_args$gallery_url > $tempfile
+    curl -s $gallery_url > $tempfile
 
     #Search for album title by parsing html
     album_title=`awk -F\" '/data-title/ { print $6 }' $tempfile | sed -n 1p`
@@ -101,7 +101,7 @@ download()
     #end -p
     #curl_args is written here without spaces to avoid
     #spacing issues if -s was declared.
-    curl$curl_args$image > "$album_title"/$i.jpg
+    curl $curl_args $image > "$album_title"/$i.jpg
   done
 }
 
@@ -146,8 +146,6 @@ then
   if [[ "$curl_args" == " -s " ]]
   then
     curl_args=" -s -O "
-  else
-    curl_args=" "
   fi
   download $gallery_url
 fi
