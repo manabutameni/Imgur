@@ -48,8 +48,7 @@ the directory you want the imgur album.
 sudo mkdir -p /usr/local/bin 
 sudo chown `whoami` /usr/local/bin
 cd /usr/local/bin
-curl -O http://raw.github.com/manabutameni/Imgur/master/imgur.sh
-mv imgur.sh imgur
+curl https://raw.github.com/manabutameni/Imgur/master/imgur.sh -o imgur
 chmod +x imgur
 PATH=$PATH:/usr/local/bin # only if you haven't done this already
 export PATH
