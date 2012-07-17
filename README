@@ -4,7 +4,7 @@
 
 This is a 100% Bash script used to download imgur albums while making sure that
 the order of the pictures is retained. The script now allows for multi-file
-support. E.X. ./imgur -m List-Of-Imgur-Album-URLs-seperated-by-newlines.txt
+support.
 
   usage: ./imgur.sh [-cpsm] [file] URL
   This script is used solely to download imgur albums.
@@ -37,6 +37,8 @@ chmod +x imgur.sh
 
 If you want to use the multiple-files feature then you will need to have
 a plain text file with imgur album URLs seperated by new lines
+
+./imgur.sh -m Imgur-Albums-List.txt
 
 +------------+
 |INSTALLATION|
