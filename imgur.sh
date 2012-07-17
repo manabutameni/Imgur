@@ -105,7 +105,7 @@ do
         let ITERATE=$ITERATE+1;
       fi
 
-      mkdir "$ALBUM_TITLE"
+      mkdir -p "$ALBUM_TITLE"
       curl $CURL_ARGS$IMAGE > "$ALBUM_TITLE"/$ITERATE.jpg
     done
   else
