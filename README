@@ -35,11 +35,15 @@ the address bar link into the terminal.
 chmod +x imgur.sh
 ./imgur.sh -h
 
+If you want to use the multiple-files feature then you will need to have
+a plain text file with imgur album URLs seperated by new lines
+
 +------------+
 |INSTALLATION|
 +------------+
 
-This is only if you want to reference the script without having it in the directory you want the imgur album.
+This is only if you want to reference the script without having it in 
+the directory you want the imgur album.
 
 sudo mkdir -p /usr/local/bin 
 sudo chown `whoami` /usr/local/bin

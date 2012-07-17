@@ -1,19 +1,21 @@
 #!/bin/bash
 
-i=0
-gallery_url=""
-multiple_files=false
-extra_clean=false
-preserve=false
-curl_args=""
-tempname=`basename $0`
-tempfile=`mktemp -t ${tempname}.XXXXX` || exit 1
+ITERATE=0
+CURL_ARGS=""
+MULTIPLE_URLS=false
+SANITIZE=false
+PRESERVE=false
+TEMPNAME=`basename $0`
+TEMPFILE=`mktemp -t ${TEMPNAME}.XXXXX` || exit 1
+
+declare -a GALLERY_URL=(''); 
+IMAGE=
 
 usage()
 {
   cat << EOF
 
-  usage: ./imgur.sh [-cpsm] [file] URL
+  usage: ./imgur-devel.sh [-cpsm] [file / URL] 
   This script is used solely to download imgur albums.
 
   OPTIONS:
@@ -26,85 +28,6 @@ usage()
 EOF
 }
 
-download()
-{
-  gallery_url="$1"
-
-  if [[ "$gallery_url" =~ "imgur.com" ]]
-  then
-
-    i=0 
-    curl -s $gallery_url > $tempfile
-
-    #Search for album title by parsing html
-    album_title=`awk -F\" '/data-title/ { print $6 }' $tempfile | sed -n 1p`
-
-    #Sanitize $album_title
-    CLEAN=${album_title//_/}
-    CLEAN=${CLEAN// /_}
-
-    #The following is executed if -c was declared.
-    if [[ $extra_clean == true ]] 
-    then
-      CLEAN=${CLEAN//[^a-zA-Z0-9_]/}
-      CLEAN=`echo -n $CLEAN | tr A-Z a-z`
-    fi
-    #end -c
-    #Sometimes the end of an album title is a blank space
-    #Remove it so it doesn't get renamed as _
-    if [[ "${album_title:(-1)}" == " " ]]
-    then
-      album_title=${CLEAN%?}
-    else
-      album_title=$CLEAN
-    fi
-
-    #Sometimes people don't give their albums a title.
-    #This sets album_title as the last 5 digits in the URL.
-    if [ ${#album_title} -eq 0 ]
-    then
-      album_title=${gallery_url:(-5)}
-      #Some album URLs have a '#' character. Remove that to
-      #prevent folder naming problems.
-      if [[ "$album_title" =~ "#" ]]
-      then
-        album_title=${gallery_url:(-7)}
-        album_title=${album_title:0:5}
-      fi
-    elif [[ "$album_title" =~ '/' ]]
-    then
-      album_title=`echo $album_title | sed 's/\//-/'`
-    fi
-  else
-
-    echo
-    echo "Imgur albums only."
-    echo
-    exit 1
-
-  fi
-
-  mkdir -p "$album_title"
-  #Parse image name from the temporary html file and ensure 
-  #that it's not a thumbnail instead of the full sized image.
-  for image in $(awk -F\" '/data-src/ { print $10 } ' $tempfile |
-          sed '/^$/d' | sed 's/s.jpg/.jpg/')
-  do
-    #The following is executed if -p was declared.
-    if [[ $preserve == false ]]
-    then
-      let i=$i+1;
-      i=$i
-    else
-      i=${image:(-9):5}
-    fi
-    #end -p
-    #curl_args is written here without spaces to avoid
-    #spacing issues if -s was declared.
-    curl $curl_args $image > "$album_title"/$i.jpg
-  done
-}
-
 while getopts "hm:cps" OPTION
 do
   case $OPTION in
@@ -113,39 +36,86 @@ do
       exit 0
       ;;
     m)
-      multiple_files=true
+      MULTIPLE_URLS=true
 
-      for line in $(cat $OPTARG)
-      do
-        gallery_url=$line
-        download "$line"
-      done
+      GALLERY_URL=( `cat "$OPTARG"` )
       ;;
-    c) 
-      extra_clean=true
+    c)
+      SANITIZE=true
       ;;
     p)
-      preserve=true
+      PRESERVE=true
       ;;
     s)
-      curl_args=" -s "
+      CURL_ARGS="-s "
       ;;
     ?)
       echo
-      echo "usage: $0 [-cpsm] [file] URL..."
+      echo "usage: $0 [-cps] URL..."
+      echo "usage: $0 [-m] file..."
       echo
       exit 1
       ;;
   esac
 done
 
-# gallery_url = multiple_files without this
-if [[ $multiple_files == false ]]
+if ! $MULTIPLE_URLS
 then
-  gallery_url="${@: -1}"
-  if [[ "$curl_args" == " -s " ]]
-  then
-    curl_args=" -s -O "
-  fi
-  download $gallery_url
+  GALLERY_URL[0]="${@: -1}"
 fi
+
+for url in ${GALLERY_URL[@]}
+do
+  ITERATE=0
+  if [[ "$url" =~ "imgur.com" ]]
+  then
+    curl $CURL_ARGS$url > $TEMPFILE
+    # sed -n 1p is needed since sometimes data-title appears twice
+    ALBUM_TITLE=$(awk -F\" '/data-title/ { print $6 }' $TEMPFILE | sed -n 1p)
+
+    if $SANITIZE
+    then
+      CLEAN=${ALBUM_TITLE//_/}
+      CLEAN=${CLEAN// /_}
+      ALBUM_TITLE=${CLEAN//[^a-zA-Z0-9_]/}
+    fi
+
+    if $PRESERVE
+    then
+      ALBUM_TITLE=
+    fi
+
+    if [ -z "$ALBUM_TITLE" ]
+    then
+      # Find the /a/ in the url and cut out the last bit of the url
+      # for the folder name
+      ALBUM_TITLE=`echo ${url#*a} | sed 's/\///g' | cut -b 1-5`
+    fi
+    mkdir $ALBUM_TITLE
+
+    # Get all images and ensure that they aren't thumbnails
+    for IMAGE in $(awk -F\" '/data-src/ { print $10 }' $TEMPFILE | 
+                   sed '/^$/d' | sed 's/s.jpg/.jpg/g')
+    do
+      # Determine the name of the image
+      # Special Note: Some albums' source has the images out of order?
+      if $PRESERVE
+      then
+        ITERATE=${IMAGE:(-9):5}
+      else
+        let ITERATE=$ITERATE+1;
+      fi
+
+      curl $CURL_ARGS$IMAGE > "$ALBUM_TITLE"/$ITERATE.jpg
+    done
+  else
+    echo
+    echo "Must be an album from imgur.com"
+    echo "usage: $0 [-cps] URL..."
+    echo "usage: $0 [-m] file..."
+    echo
+    exit 1
+  fi
+done
+
+rm $TEMPFILE
