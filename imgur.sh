@@ -37,7 +37,6 @@ do
       ;;
     m)
       MULTIPLE_URLS=true
-
       GALLERY_URL=( `cat "$OPTARG"` )
       ;;
     c)
