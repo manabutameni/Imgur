@@ -91,7 +91,6 @@ do
       # for the folder name
       ALBUM_TITLE=`echo ${url#*a} | sed 's/\///g' | cut -b 1-5`
     fi
-    mkdir $ALBUM_TITLE
 
     # Get all images and ensure that they aren't thumbnails
     for IMAGE in $(awk -F\" '/data-src/ { print $10 }' $TEMPFILE | 
@@ -106,6 +105,7 @@ do
         let ITERATE=$ITERATE+1;
       fi
 
+      mkdir "$ALBUM_TITLE"
       curl $CURL_ARGS$IMAGE > "$ALBUM_TITLE"/$ITERATE.jpg
     done
   else
