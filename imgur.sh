@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Author's note: It's so humid in my basement that I woke up to mold
-# growing where chesthair should be. #offtopic
-
 CURL_ARGS=""
 MULTIPLE_URLS=false
 FOLDEREXISTS=true # Assume the worst. Pragmatism not idealism.
