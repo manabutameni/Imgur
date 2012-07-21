@@ -139,3 +139,5 @@ do
 done
 
 rm $TEMPFILE
+
+exit 0
