@@ -63,6 +63,12 @@ then
   GALLERY_URL[0]="${@: -1}"
 fi
 
+if [ -z ${GALLERY_URL[0]} ]
+then
+  usage
+  exit 1
+fi
+
 for url in ${GALLERY_URL[@]}
 do
   if [[ "$url" =~ "imgur.com" ]]
