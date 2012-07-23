@@ -90,7 +90,6 @@ do
     # if PRESERVE flag has been raised or $ALBUM_TITLE is empty
     if $PRESERVE || [[ -z "$ALBUM_TITLE" ]]
     then
-      echo        preserve: $PRESERVE albumtitle: $ALBUM_TITLE
       # Find the /a/ in the url and cut out the last bit of the url
       # for the folder name. Hope this works every time. :\
       ALBUM_TITLE=`echo ${url#*a} | sed 's/\///g' | cut -b 1-5`
