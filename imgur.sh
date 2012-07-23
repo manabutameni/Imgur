@@ -4,6 +4,7 @@ CURL_ARGS=" "
 MULTIPLE_URLS=false
 FOLDEREXISTS=true # Assume the worst. Pragmatism not idealism.
 IMAGE_NAME=0
+CLEAN=""
 SANITIZE=false
 PRESERVE=false
 TEMPNAME=`basename $0`
@@ -51,7 +52,7 @@ do
     ?)
       echo
       echo "usage: $0 [-cps] URL..."
-      echo "usage: $0 [-m] file..."
+      echo "usage: $0 [-m]  file..."
       echo
       exit 1
       ;;
@@ -71,7 +72,7 @@ fi
 
 for url in ${GALLERY_URL[@]}
 do
-  if [[ "$url" =~ "imgur.com" ]]
+  if [[ "$url" =~ "imgur.com/a/" ]]
   then
     curl $CURL_ARGS $url > $TEMPFILE
     # sed -n 1p is needed since sometimes data-title appears twice
@@ -79,18 +80,17 @@ do
 
     if $SANITIZE # remove special characters
     then
-      CLEAN=${ALBUM_TITLE//_/}
-      CLEAN=${CLEAN// /_}
-      ALBUM_TITLE=${CLEAN//[^a-zA-Z0-9_]/}
+      CLEAN=${ALBUM_TITLE//_/} #turn / into _
+      CLEAN=${CLEAN// /_} #turn spaces into _
+      ALBUM_TITLE="${CLEAN//[^a-zA-Z0-9_]/}"
+    else
+      ALBUM_TITLE=`echo $ALBUM_TITLE | sed 's/\//_/g'`
     fi
 
-    if $PRESERVE # preserve imugr's naming convention for folder
+    # if PRESERVE flag has been raised or $ALBUM_TITLE is empty
+    if $PRESERVE || [[ -z "$ALBUM_TITLE" ]]
     then
-      ALBUM_TITLE=
-    fi
-
-    if [ -z "$ALBUM_TITLE" ] # if [ ALBUM_TITLE is empty ]
-    then
+      echo        preserve: $PRESERVE albumtitle: $ALBUM_TITLE
       # Find the /a/ in the url and cut out the last bit of the url
       # for the folder name. Hope this works every time. :\
       ALBUM_TITLE=`echo ${url#*a} | sed 's/\///g' | cut -b 1-5`
@@ -122,22 +122,24 @@ do
         IMAGE_NAME=${IMAGE_URL:(-9):5}
       else
         # Give the images an ascending name
+        # To do: Include imgur naming scheme into the ascending filename
         let IMAGE_NAME=$IMAGE_NAME+1;
       fi
 
-      # curl -arguments image-url > foldername/imagename.jpg
       curl $CURL_ARGS $IMAGE_URL > "$ALBUM_TITLE"/$IMAGE_NAME.jpg
-      echo Debug: curl $CURL_ARGS $IMAGE_URL \> $ALBUM_TITLE / $IMAGE_NAME.jpg
     done
   else
     echo
     echo "Must be an album from imgur.com"
     echo "usage: $0 [-cps] URL..."
-    echo "usage: $0 [-m] file..."
+    echo "usage: $0 [-m]  file..."
     echo
     exit 1
   fi
 done
+
+echo
+echo
 
 rm $TEMPFILE
 
