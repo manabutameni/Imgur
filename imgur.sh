@@ -1,9 +1,9 @@
 #!/bin/bash
 
-CURL_ARGS=""
+CURL_ARGS=" "
 MULTIPLE_URLS=false
 FOLDEREXISTS=true # Assume the worst. Pragmatism not idealism.
-ITERATE=0
+IMAGE_NAME=0
 SANITIZE=false
 PRESERVE=false
 TEMPNAME=`basename $0`
@@ -73,7 +73,7 @@ for url in ${GALLERY_URL[@]}
 do
   if [[ "$url" =~ "imgur.com" ]]
   then
-    curl $CURL_ARGS$url > $TEMPFILE
+    curl $CURL_ARGS $url > $TEMPFILE
     # sed -n 1p is needed since sometimes data-title appears twice
     ALBUM_TITLE=$(awk -F\" '/data-title/ { print $6 }' $TEMPFILE | sed -n 1p)
 
@@ -108,9 +108,9 @@ do
       mkdir -p "$ALBUM_TITLE"
     fi
 
-    ITERATE=0
+    IMAGE_NAME=0
     # Get all images and ensure that they aren't thumbnails
-    for IMAGE in $(awk -F\" '/data-src/ { print $10 }' $TEMPFILE | 
+    for IMAGE_URL in $(awk -F\" '/data-src/ { print $10 }' $TEMPFILE | 
       sed '/^$/d' | sed 's/s.jpg/.jpg/g')
     do
       # Determine the name of the image
@@ -119,14 +119,15 @@ do
       then
         # Preserve imgur naming conventions. Note: Does not guarantee
         # images to be properly sorted.
-        ITERATE=${IMAGE:(-9):5}
+        IMAGE_NAME=${IMAGE_URL:(-9):5}
       else
         # Give the images an ascending name
-        let ITERATE=$ITERATE+1;
+        let IMAGE_NAME=$IMAGE_NAME+1;
       fi
 
       # curl -arguments image-url > foldername/imagename.jpg
-      curl $CURL_ARGS$IMAGE > "$ALBUM_TITLE"/$ITERATE.jpg
+      curl $CURL_ARGS $IMAGE_URL > "$ALBUM_TITLE"/$IMAGE_NAME.jpg
+      echo Debug: curl $CURL_ARGS $IMAGE_URL \> $ALBUM_TITLE / $IMAGE_NAME.jpg
     done
   else
     echo
