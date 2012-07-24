@@ -129,9 +129,10 @@ do
         # Note: Does not guarantee images to be properly sorted.
         IMAGE_NAME=${IMAGE_URL:(-9):5}
       else
-        IMAGE_NAME=$DATA_INDEX
+        IMAGE_NAME=`echo $DATA_INDEX`
       fi
 
+      echo $CURL_ARGS $IMAGE_URL ::: "$ALBUM_TITLE"/$IMAGE_NAME.jpg
       curl $CURL_ARGS $IMAGE_URL > "$ALBUM_TITLE"/$IMAGE_NAME.jpg ||
           echo "cURL failed to download :: $IMAGE_URL" >> $LOGFILE
     done
