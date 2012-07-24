@@ -65,7 +65,8 @@ imgur http://www.imgur.com/a/XXXXX
 +--------------+
 
 There is a file named imgur.desktop with you in mind.
-Simply copy to your local `kde4-config --path services` location.
+Simply copy to your local `kde4-config --path services` location and 
+make sure it's executable. chmod +x imgur.desktop.
 
 To use: Simply copy the url of an imgur album and right click on
 An empty area in dolphin. Under actions you should see "Imgur Album DL".
