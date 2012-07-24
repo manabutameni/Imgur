@@ -7,8 +7,8 @@ LOGNAME=$HTMLNAME.log
 HTMLTEMP=`mktemp -t ${HTMLNAME}.XXXXX` || exit 1
 LOGFILE=`mktemp -t ${LOGNAME}.XXXXX` || exit 1
 
-MULTIPLE_URLS=false
 FOLDEREXISTS=true # Assume the worst. Pragmatism not idealism.
+MULTIPLE_URLS=false
 SANITIZE=false
 PRESERVE=false
 CURL_ARGS=" "
