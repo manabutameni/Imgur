@@ -1,14 +1,20 @@
 #!/bin/bash
 
+# HTMLTEMP holds .html file for quick, multiple searches
+# LOGFILE holds logs and failed curl downloads
+HTMLNAME=`basename $0`
+LOGNAME=$HTMLNAME.log
+HTMLTEMP=`mktemp -t ${HTMLNAME}.XXXXX` || exit 1
+LOGFILE=`mktemp -t ${LOGNAME}.XXXXX` || exit 1
+
 CURL_ARGS=" "
 MULTIPLE_URLS=false
 FOLDEREXISTS=true # Assume the worst. Pragmatism not idealism.
-IMAGE_NAME=0
+IMAGE_NAME=
+DATA_INDEX=
 CLEAN=""
 SANITIZE=false
 PRESERVE=false
-TEMPNAME=`basename $0`
-TEMPFILE=`mktemp -t ${TEMPNAME}.XXXXX` || exit 1
 
 declare -a GALLERY_URL=(''); 
 
@@ -74,9 +80,9 @@ for url in ${GALLERY_URL[@]}
 do
   if [[ "$url" =~ "imgur.com/a/" ]]
   then
-    curl $CURL_ARGS $url > $TEMPFILE
+    curl $CURL_ARGS $url > $HTMLTEMP
     # sed -n 1p is needed since sometimes data-title appears twice
-    ALBUM_TITLE=$(awk -F\" '/data-title/ { print $6 }' $TEMPFILE | sed -n 1p)
+    ALBUM_TITLE=$(awk -F\" '/data-title/ {print $6}' $HTMLTEMP | sed -n 1p)
 
     if $SANITIZE # remove special characters
     then
@@ -107,25 +113,27 @@ do
       mkdir -p "$ALBUM_TITLE"
     fi
 
-    IMAGE_NAME=0
     # Get all images and ensure that they aren't thumbnails
-    for IMAGE_URL in $(awk -F\" '/data-src/ { print $10 }' $TEMPFILE | 
-      sed '/^$/d' | sed 's/s.jpg/.jpg/g')
+    for IMAGE_URL in $(awk -F\" '/data-src/ {print $10}' $HTMLTEMP | sed '/^$/d')
     do
-      # Determine the name of the image
-      # Special Note: Some albums' html source has the images out of order?
+      # Some albums have the source images out of order, this fixes that.
+      DATA_INDEX=`grep $IMAGE_URL $HTMLTEMP | awk -F\" '{print $12}'`
+
+      # Ensure no images are thumbnails
+      # Always works because all files currently in $IMAGE_URL are thumbnails.
+      IMAGE_URL=`echo $IMAGE_URL | sed 's/s.jpg/.jpg/g'`
+
       if $PRESERVE
       then
-        # Preserve imgur naming conventions. Note: Does not guarantee
-        # images to be properly sorted.
+        # Preserve imgur naming conventions.
+        # Note: Does not guarantee images to be properly sorted.
         IMAGE_NAME=${IMAGE_URL:(-9):5}
       else
-        # Give the images an ascending name
-        # To do: Include imgur naming scheme into the ascending filename
-        let IMAGE_NAME=$IMAGE_NAME+1;
+        IMAGE_NAME=$DATA_INDEX
       fi
 
-      curl $CURL_ARGS $IMAGE_URL > "$ALBUM_TITLE"/$IMAGE_NAME.jpg
+      curl $CURL_ARGS $IMAGE_URL > "$ALBUM_TITLE"/$IMAGE_NAME.jpg ||
+          echo "cURL failed to download :: $IMAGE_URL" >> $LOGFILE
     done
   else
     echo
@@ -140,6 +148,12 @@ done
 echo
 echo
 
-rm $TEMPFILE
-
-exit 0
+if [[ -s $LOGFILE ]]
+then
+  echo "exited with errors, check $LOGFILE"
+  exit 1
+else
+  rm $HTMLTEMP
+  rm $LOGFILE
+  exit 0
+fi
