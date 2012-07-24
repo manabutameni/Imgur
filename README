@@ -18,7 +18,9 @@ support.
 
 Thanks to everyone in this thread who helped me out.
 http://redd.it/webn1
-Special Thanks goes to Reddit users Ihasn and Skaarj.
+Special Thanks goes to Reddit users:
+Ihasn and Skaarj for help on the base code during the early stages.
+invisiblescars for the idea and original code for a kde4 context menu.
 
 Compatible with:
   Linux
@@ -57,3 +59,10 @@ export PATH
 
 To use:
 imgur http://www.imgur.com/a/XXXXX
+
++--------------+
+|FOR KDE4 USERS|
++--------------+
+
+There is a file named imgur.desktop with you in mind.
+Simply copy to your local `kde4-config --path services` location.

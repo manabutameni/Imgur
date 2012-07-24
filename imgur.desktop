@@ -1,0 +1,9 @@
+[Desktop Entry]
+Actions=imgur.dl;
+MimeType=inode/*;
+ServiceTypes=KonqPopupMenu/Plugin
+Type=Service
+
+[Desktop Action imgur.dl]
+Name=Imgur Album DL
+Exec=cd %f; imgur $(qdbus org.kde.klipper /klipper getClipboardContents)
