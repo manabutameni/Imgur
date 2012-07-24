@@ -42,6 +42,9 @@ a plain text file with imgur album URLs seperated by new lines
 
 ./imgur.sh -m Imgur-Albums-List.txt
 
+Special note: If you do use the -m flag it must be the last option.
+E.X. ./imgur.sh -scm Imgur-Albums-List.txt
+
 +------------+
 |INSTALLATION|
 +------------+
