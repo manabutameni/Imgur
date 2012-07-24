@@ -7,14 +7,14 @@ LOGNAME=$HTMLNAME.log
 HTMLTEMP=`mktemp -t ${HTMLNAME}.XXXXX` || exit 1
 LOGFILE=`mktemp -t ${LOGNAME}.XXXXX` || exit 1
 
-CURL_ARGS=" "
 MULTIPLE_URLS=false
 FOLDEREXISTS=true # Assume the worst. Pragmatism not idealism.
-IMAGE_NAME=
-DATA_INDEX=
-CLEAN=""
 SANITIZE=false
 PRESERVE=false
+CURL_ARGS=" "
+IMAGE_NAME=""
+DATA_INDEX=""
+CLEAN=""
 
 declare -a GALLERY_URL=(''); 
 
