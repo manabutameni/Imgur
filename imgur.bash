@@ -135,8 +135,12 @@ do
         image_name=$(echo $data_index)
       fi
 
-      curl $curl_args $image_url > "$album_title"/$image_name.jpg ||
+      image_name=$image_name.jpg
+      curl $curl_args $image_url > "$album_title"/$image_name ||
         printf "failed to download: $image_url" >> $logfile
+
+      mv "$album_title"/$image_name \
+        "$album_title"/$(printf %05d.%s ${image_name%.*} ${image_name##*.})
 
       let count=$count+1;
     done
