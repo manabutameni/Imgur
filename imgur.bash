@@ -116,7 +116,6 @@ do
       mkdir -p "$album_title"
     fi
 
-    # Get all images and ensure that they aren't thumbnails
     for image_url in $(awk -F\" '/data-src/ {print $10}' $htmltemp | sed '/^$/d')
     do
       # Some albums have the source images out of order, this fixes that.
@@ -124,7 +123,7 @@ do
 
       # Ensure no images are thumbnails
       # Always works because all files currently in $image_url are thumbnails.
-      image_url=$(echo $image_url | sed 's/s.jpg/.jpg/g')
+      image_url=$(sed 's/s.jpg/.jpg/g' <<< "$image_url")
 
       if [[ "$preserve" == "TRUE" ]]
       then
@@ -135,6 +134,7 @@ do
         image_name=$(echo $data_index)
       fi
 
+      # Note to future me: Perhaps make this context sensitive instead of .jpg
       image_name=$image_name.jpg
       curl $curl_args $image_url > "$album_title"/$image_name ||
         printf "failed to download: $image_url" >> $logfile
