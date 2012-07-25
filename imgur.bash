@@ -11,7 +11,7 @@ folderexists="TRUE" # Assume the worst. Pragmatism not idealism.
 multiple_urls="FALSE"
 sanitize="FALSE"
 preserve="FALSE"
-curl_args=("-# ")
+curl_args="-#"
 image_name=""
 data_index=""
 clean=""
@@ -59,7 +59,7 @@ do
       ;;
     m)
       multiple_urls="TRUE"
-      gallery_url=$(<"$OPTARG")
+      gallery_url=( $(cat "$OPTARG") )
       ;;
     c)
       sanitize="TRUE"
@@ -68,7 +68,7 @@ do
       preserve="TRUE"
       ;;
     s)
-      curl_args=("-s ")
+      curl_args="-s"
       ;;
     ?)
       echo
@@ -153,8 +153,11 @@ do
       curl $curl_args $image_url > "$album_title"/$image_name ||
         printf "failed to download: $image_url" >> $logfile
 
-      mv "$album_title"/$image_name \
-        "$album_title"/$(printf %05d.%s ${image_name%.*} ${image_name##*.})
+      if [[ "$preserve" == "FALSE" ]]
+      then
+        mv "$album_title"/$image_name \
+          "$album_title"/$(printf %05d.%s ${image_name%.*} ${image_name##*.})
+      fi
 
       let count=$count+1;
     done
