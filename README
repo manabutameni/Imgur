@@ -74,3 +74,14 @@ make sure it's executable. chmod +x imgur.desktop.
 To use: Simply copy the url of an imgur album into your clipboard and
 right click on an empty area in dolphin. Under actions you should see 
 "Imgur Album DL".
+
++-----+
+|EXTRA|
++-----+
+
+You may be wondering why I bothered to write this script.
+The answer is twofold. First, I wanted to write a script that would ensure
+that each image is in the proper order which you can't do by clicking the
+"Download" button on imgur albums. Seriously, click the "Download" link
+here and see for yourself: http://imgur.com/a/NhmjT/all#0
+The second reason was to test my ability with bash.
