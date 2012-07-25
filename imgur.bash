@@ -101,7 +101,8 @@ do
     then
       # Find the /a/ in the url and cut out the last bit of the url
       # for the folder name. Hope this works every time. :/
-      album_title=$(sed -e 's/\///g' -e 's/#.*//g'  <<< ${url#*a})
+      #album_title=$(sed -e 's/\///g' -e 's/#.*//g'  <<< ${url#*a})
+      album_title=$(awk -F\/ '{print $5}' <<< "$url")
     fi
 
     # It only takes one album named Pictures to possibly screw up
