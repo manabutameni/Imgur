@@ -3,7 +3,7 @@
 +-----+
 
 This is a 100% Bash script used to download imgur albums while making sure that
-the order of the pictures is retained. The script now allows for multi-file
+the order of the pictures is retained. The script now allows for multi-album
 support.
 
   usage: ./imgur.sh [-cpsm] [file] URL
