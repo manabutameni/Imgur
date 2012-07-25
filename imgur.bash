@@ -1,28 +1,29 @@
 #!/bin/bash
 
-# HTMLTEMP holds .html file for quick, multiple searches
-# LOGFILE holds logs and failed curl downloads
-HTMLNAME=`basename $0`
-LOGNAME=$HTMLNAME.log
-HTMLTEMP=`mktemp -t ${HTMLNAME}.XXXXX` || exit 1
-LOGFILE=`mktemp -t ${LOGNAME}.XXXXX` || exit 1
+# htmltemp holds .html file for quick, multiple searches
+# logfile holds failed curl downloads
+htmlname="${0##*/}"
+logname=$htmlname.log
+htmltemp=$(mktemp -t ${htmlname}.XXXXX) || exit 1
+logfile=$(mktemp -t ${logname}.XXXXX) || exit 1
 
-FOLDEREXISTS=true # Assume the worst. Pragmatism not idealism.
-MULTIPLE_URLS=false
-SANITIZE=false
-PRESERVE=false
-CURL_ARGS=" "
-IMAGE_NAME=""
-DATA_INDEX=""
-CLEAN=""
+folderexists="TRUE" # Assume the worst. Pragmatism not idealism.
+multiple_urls="FALSE"
+sanitize="FALSE"
+preserve="FALSE"
+curl_args=("-# ")
+image_name=""
+data_index=""
+clean=""
+count=0
 
-declare -a GALLERY_URL=(''); 
+gallery_url=('') 
 
 usage()
 {
   cat << EOF
 
-  usage: ./imgur-devel.sh [-cpsm] [file / URL] 
+  usage: ./imgur-devel.sh [-cps] [-m file] URL
   This script is used solely to download imgur albums.
 
   OPTIONS:
@@ -43,17 +44,17 @@ do
       exit 0
       ;;
     m)
-      MULTIPLE_URLS=true
-      GALLERY_URL=( `cat "$OPTARG"` )
+      multiple_urls="TRUE"
+      gallery_url=$(<"$OPTARG")
       ;;
     c)
-      SANITIZE=true
+      sanitize="TRUE"
       ;;
     p)
-      PRESERVE=true
+      preserve="TRUE"
       ;;
     s)
-      CURL_ARGS="-s "
+      curl_args=("-s ")
       ;;
     ?)
       echo
@@ -65,75 +66,79 @@ do
   esac
 done
 
-if ! $MULTIPLE_URLS
+
+if [[ "$multiple_urls" == "FALSE" ]]
 then
-  GALLERY_URL[0]="${@: -1}"
+  gallery_url[0]="${@: -1}"
 fi
 
-if [ -z ${GALLERY_URL[0]} ]
+if [[ -z ${gallery_url[0]} ]]
 then
   usage
   exit 1
 fi
 
-for url in ${GALLERY_URL[@]}
+for url in ${gallery_url[@]}
 do
   if [[ "$url" =~ "imgur.com/a/" ]]
   then
-    curl $CURL_ARGS $url > $HTMLTEMP
-    # sed -n 1p is needed since sometimes data-title appears twice
-    ALBUM_TITLE=$(awk -F\" '/data-title/ {print $6}' $HTMLTEMP | sed -n 1p)
+    # Silent here because we are not downloading an image.
+    curl -s $url > $htmltemp
+    # ;exit is needed since sometimes data-title appears twice
+    album_title=$(awk -F\" '/data-title/ {print $6; exit}' $htmltemp)
 
-    if $SANITIZE # remove special characters
+    if [[ "$sanitize" == "TRUE" ]] # remove special characters
     then
-      CLEAN=${ALBUM_TITLE//_/} #turn / into _
-      CLEAN=${CLEAN// /_} #turn spaces into _
-      ALBUM_TITLE="${CLEAN//[^a-zA-Z0-9_]/}"
+      clean=${album_title//_/} #turn / into _
+      clean=${clean// /_} #turn spaces into _
+      album_title="${clean//[^a-zA-Z0-9_]/}" # remove all special chars
     else
-      ALBUM_TITLE=`echo $ALBUM_TITLE | sed 's/\//_/g'`
+      album_title=$(sed 's/\//_/g' <<< $album_title) # ensure no / chars
     fi
 
-    # if PRESERVE flag has been raised or $ALBUM_TITLE is empty
-    if $PRESERVE || [[ -z "$ALBUM_TITLE" ]]
+    # if preserve flag has been raised or $album_title is empty
+    if [[ "$preserve" == "TRUE" ]] || [[ -z "$album_title" ]]
     then
       # Find the /a/ in the url and cut out the last bit of the url
-      # for the folder name. Hope this works every time. :\
-      ALBUM_TITLE=`echo ${url#*a} | sed 's/\///g' | cut -b 1-5`
+      # for the folder name. Hope this works every time. :/
+      album_title=$(sed -e 's/\///g' -e 's/#.*//g'  <<< ${url#*a})
     fi
 
     # It only takes one album named Pictures to possibly screw up
     # an entire folder. This will also save images to a new directory
     # if the script is used twice on the same album in the same folder.
-    test -d "$ALBUM_TITLE" || FOLDEREXISTS=false
-    if $FOLDEREXISTS
+    test -d "$album_title" || folderexists="FALSE"
+    if [[ "$folderexists" == "TRUE" ]]
     then
-      tempdir=`mktemp -d "$ALBUM_TITLE"_XXXXX` || exit 1
-      ALBUM_TITLE=$tempdir
+      tempdir=$(mktemp -d "$album_title"_XXXXX) || exit 1
+      album_title="$tempdir"
     else
-      mkdir -p "$ALBUM_TITLE"
+      mkdir -p "$album_title"
     fi
 
     # Get all images and ensure that they aren't thumbnails
-    for IMAGE_URL in $(awk -F\" '/data-src/ {print $10}' $HTMLTEMP | sed '/^$/d')
+    for image_url in $(awk -F\" '/data-src/ {print $10}' $htmltemp | sed '/^$/d')
     do
       # Some albums have the source images out of order, this fixes that.
-      DATA_INDEX=`grep $IMAGE_URL $HTMLTEMP | awk -F\" '{print $12}'`
+      data_index=$(grep $image_url $htmltemp | awk -F\" '{print $12}')
 
       # Ensure no images are thumbnails
-      # Always works because all files currently in $IMAGE_URL are thumbnails.
-      IMAGE_URL=`echo $IMAGE_URL | sed 's/s.jpg/.jpg/g'`
+      # Always works because all files currently in $image_url are thumbnails.
+      image_url=$(echo $image_url | sed 's/s.jpg/.jpg/g')
 
-      if $PRESERVE
+      if [[ "$preserve" == "TRUE" ]]
       then
         # Preserve imgur naming conventions.
         # Note: Does not guarantee images to be properly sorted.
-        IMAGE_NAME=${IMAGE_URL:(-9):5}
+        image_name=${image_url:(-9):5}
       else
-        IMAGE_NAME=`echo $DATA_INDEX`
+        image_name=$(echo $data_index)
       fi
 
-      curl $CURL_ARGS $IMAGE_URL > "$ALBUM_TITLE"/$IMAGE_NAME.jpg ||
-          echo "cURL failed to download :: $IMAGE_URL" >> $LOGFILE
+      curl $curl_args $image_url > "$album_title"/$image_name.jpg ||
+        printf "failed to download: $image_url"
+
+      let count=$count+1;
     done
   else
     echo
@@ -145,15 +150,15 @@ do
   fi
 done
 
-echo
-echo
+echo 
 
-if [[ -s $LOGFILE ]]
+if [[ -s "$logfile" ]]
 then
-  echo "exited with errors, check $LOGFILE"
+  echo "Exited with errors, check $logfile"
   exit 1
 else
-  rm $HTMLTEMP
-  rm $LOGFILE
+  echo "Finished with $count files downloaded."
+  rm $htmltemp
+  rm $logfile
   exit 0
 fi
