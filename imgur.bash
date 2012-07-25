@@ -136,7 +136,7 @@ do
       fi
 
       curl $curl_args $image_url > "$album_title"/$image_name.jpg ||
-        printf "failed to download: $image_url"
+        printf "failed to download: $image_url" >> $logfile
 
       let count=$count+1;
     done
