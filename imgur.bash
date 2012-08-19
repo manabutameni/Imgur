@@ -96,13 +96,15 @@ fi
 
 if [[ "$gallery_url[0]" =~ ".imgur.com" ]]
 then
-  url="${@}"
+  url="${gallery_url[0]}"
   album_title=${url#*//}
   album_title=${album_title%.imgur*}
   curl -s $url > $htmltemp
 
   gallery_url=( $(grep "imgur.com/a/" $htmltemp |\
     awk -F\/\/ '{print $2}' | cut -c 1-17) ) 
+
+  echo $url >> "permalink.txt"
 fi
 
 for url in ${gallery_url[@]}
@@ -142,6 +144,8 @@ do
     else
       mkdir -p "$album_title"
     fi
+
+    echo "$url" >> "$album_title"/"permalink.txt"
 
     for image_url in $(awk -F\" '/data-src/ {print $10}' $htmltemp | sed '/^$/d')
     do
