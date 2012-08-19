@@ -164,7 +164,7 @@ do
         # Note: Does not guarantee images to be properly sorted.
         image_name=${image_url:(-9):5}
       else
-        image_name=$(echo $data_index)
+        image_name=$data_index
       fi
 
       # Note to future me: Perhaps make this context sensitive instead of .jpg
