@@ -15,7 +15,7 @@ curl_args="-#"
 image_name=""
 data_index=""
 clean=""
-count=0
+count=1
 
 gallery_url=('') 
 
