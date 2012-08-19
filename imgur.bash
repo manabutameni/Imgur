@@ -13,9 +13,9 @@ sanitize="FALSE"
 preserve="FALSE"
 curl_args="-#"
 image_name=""
-data_index=""
 clean=""
-count=1
+data_index=-1
+count=0
 
 gallery_url=('') 
 
@@ -151,6 +151,8 @@ do
     do
       # Some albums have the source images out of order, this fixes that.
       data_index=$(grep $image_url $htmltemp | awk -F\" '{print $12}')
+      data_index=$(echo $data_index)
+      let data_index=$data_index+1
 
       # Ensure no images are thumbnails
       # Always works because all files currently in $image_url are thumbnails.
