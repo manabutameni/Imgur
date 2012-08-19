@@ -39,9 +39,13 @@ DESCRIPTION
 
     -h        Show this message.
     -m <File> Download multiple albums found in <File>.
-    -c        Clean and Remove nonalphanumeric characters from the album's name.
+    -c        Clean nonalphanumeric characters from the album's name.
     -p        Preserve imgur's naming. (Warning! This will not retain order.)
     -s        Silent mode.
+
+EXAMPLES
+    ./imgur.bash http://imgur.com/a/fG58m#0
+    ./imgur.bash reactiongifsarchive.imgur.com
 
 AUTHORS
     manabutameni
@@ -75,8 +79,6 @@ do
       echo "usage: $0 [-cps] URL..."
       echo "usage: $0 [-m]  file..."
       echo
-      exit 1
-      ;;
   esac
 done
 
@@ -90,6 +92,17 @@ if [[ -z ${gallery_url[0]} ]]
 then
   usage
   exit 1
+fi
+
+if [[ "$gallery_url[0]" =~ ".imgur.com" ]]
+then
+  url="${@}"
+  album_title=${url#*//}
+  album_title=${album_title%.imgur*}
+  curl -s $url > $htmltemp
+
+  gallery_url=( $(grep "imgur.com/a/" $htmltemp |\
+    awk -F\/\/ '{print $2}' | cut -c 1-17) ) 
 fi
 
 for url in ${gallery_url[@]}
