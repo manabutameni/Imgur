@@ -1,12 +1,11 @@
-+------------------------------------------------------------------------------+
-|                                     ABOUT                                    |
-+------------------------------------------------------------------------------+
+ABOUT
+-----
 
 This is a 100% Bash script used to download imgur albums while making sure that
 the order of the pictures is retained. The script now allows for multi-album
 support.
 
-  usage: ./imgur.sh [-cpsm] [file] URL
+  usage: `bash imgur.sh [-cpsm] [file] URL`
   This script is used solely to download imgur albums.
 
   OPTIONS:
@@ -27,9 +26,8 @@ Compatible with:
   Unix
   OS X
 
-+------------------------------------------------------------------------------+
-|                                     USAGE                                    |
-+------------------------------------------------------------------------------+
+USAGE
+-----
 
 The script was created so that all that you need to do is copy+paste the address
 bar link into the terminal.
@@ -45,9 +43,8 @@ text file with imgur album URLs seperated by new lines
 Special note: If you do use the -m flag it must be the last option.
 E.X. `./imgur.sh -scm Imgur-Albums-List.txt`
 
-+------------------------------------------------------------------------------+
-|                                INSTALLATION                                  |
-+------------------------------------------------------------------------------+
+INSTALLATION
+------------
 
 This is only if you want to reference the script without having it in the
 directory you want the imgur album.
@@ -63,9 +60,8 @@ directory you want the imgur album.
 To use:
 `imgur http://www.imgur.com/a/XXXXX`
 
-+------------------------------------------------------------------------------+
-|                                     KDE                                      |
-+------------------------------------------------------------------------------+
+KDE
+---
 
 There is a file named imgur.desktop with you in mind. Simply copy to your local
 `kde4-config --path services` location and make sure it's executable. chmod +x
@@ -75,9 +71,8 @@ To use: Simply copy the url of an imgur album into your clipboard and right
 click on an empty area in dolphin. Under actions you should see "Imgur Album
 DL".
 
-+------------------------------------------------------------------------------+
-|                                   EXTRA                                      |
-+------------------------------------------------------------------------------+
+EXTRA
+-----
 
 I wanted to write a script that would ensure that each image is in the proper
 order which you can't do by clicking the "Download" button on imgur albums.
