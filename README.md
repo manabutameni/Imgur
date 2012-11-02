@@ -5,15 +5,15 @@ This is a 100% Bash script used to download imgur albums while making sure that
 the order of the pictures is retained. The script now allows for multi-album
 support.
 
-  usage: `bash imgur.sh [-cpsm] [file] URL`
-  This script is used solely to download imgur albums.
+    usage: `bash imgur.sh [-cpsm] [file] URL`
+    This script is used solely to download imgur albums.
 
-  OPTIONS:
-    -h        Show this message.
-    -m <File> Download multiple albums found in <File>.
-    -c        Clean nonalphanumeric characters from the album's name.
-    -p        Preserve imgur's naming. (Warning! This will not retain order.)
-    -s        Silent mode.
+    OPTIONS:
+      -h        Show this message.
+      -m <File> Download multiple albums found in <File>.
+      -c        Clean nonalphanumeric characters from the album's name.
+      -p        Preserve imgur's naming. (Warning! This will not retain order.)
+      -s        Silent mode.
 
 Thanks to everyone in this thread who helped me out.
 http://redd.it/webn1
