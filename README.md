@@ -32,8 +32,8 @@ USAGE
 The script was created so that all that you need to do is copy+paste the address
 bar link into the terminal.
 
-`chmod +x imgur.sh`
-`./imgur.sh -h`
+    chmod +x imgur.sh
+    ./imgur.sh -h
 
 If you want to use the multiple-files feature then you will need to have a plain
 text file with imgur album URLs seperated by new lines
@@ -64,8 +64,8 @@ KDE
 ---
 
 There is a file named imgur.desktop with you in mind. Simply copy to your local
-`kde4-config --path services` location and make sure it's executable. chmod +x
-imgur.desktop.
+`kde4-config --path services` location and make sure it's executable. `chmod +x
+imgur.desktop.`
 
 To use: Simply copy the url of an imgur album into your clipboard and right
 click on an empty area in dolphin. Under actions you should see "Imgur Album
