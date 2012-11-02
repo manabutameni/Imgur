@@ -2,12 +2,12 @@
 
 # htmltemp holds .html file for quick, multiple searches
 # logfile holds failed curl downloads
-htmlname="${0##*/}"
+htmlname="$(basename $0)"
 logname=$htmlname.log
 htmltemp=$(mktemp -t ${htmlname}.XXXXX) || exit 1
 logfile=$(mktemp -t ${logname}.XXXXX) || exit 1
 
-folderexists="TRUE" # Assume the worst. Pragmatism not idealism.
+folderexists="TRUE"
 multiple_urls="FALSE"
 sanitize="FALSE"
 preserve="FALSE"
@@ -27,9 +27,9 @@ NAME
     imgur - a simple album downloader
 
 SYNOPSIS
-    ./imgur.bash [-cps] URL
-    ./imgur.bash [-m FILE]
-    After installation simply replace './imgur.bash' with 'imgur'.
+    bash imgur.bash [-cps] URL
+    bash imgur.bash -m FILE
+    After installation simply replace `bash imgur.bash` with `imgur`.
 
 DESCRIPTION
     This is a 100% Bash script used to download imgur albums while making
@@ -44,10 +44,10 @@ DESCRIPTION
     -s        Silent mode.
 
 EXAMPLES
-    ./imgur.bash http://imgur.com/a/fG58m#0
-    ./imgur.bash reactiongifsarchive.imgur.com
+    bash imgur.bash http://imgur.com/a/fG58m#0
+    bash imgur.bash reactiongifsarchive.imgur.com
 
-AUTHORS
+AUTHOR
     manabutameni
     https://github.com/manabutameni/Imgur
 
@@ -64,15 +64,23 @@ do
     m)
       multiple_urls="TRUE"
       gallery_url=( $(cat "$OPTARG") )
+      # This will output all imgur ablum urls from plain text <File> into the
+      # array $gallery_url. Note: urls must be separated by newline.
       ;;
     c)
       sanitize="TRUE"
+      # Clean non alpha-numeric characters from album name.
+      # Useful for the (rare) albums named !!!OMG$)(@@*$@$%@
       ;;
     p)
       preserve="TRUE"
+      # Preserve Imgur's naming scheme. Please note that this will not keep the
+      # order of the images. While this does break the spirit of the script it
+      # is included here for the sake of completion.
       ;;
     s)
       curl_args="-s"
+      # Run silently.
       ;;
     ?)
       echo
