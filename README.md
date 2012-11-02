@@ -1,4 +1,4 @@
-ABOUT
+About
 -----
 
 This is a 100% Bash script used to download imgur albums while making sure that
@@ -15,18 +15,16 @@ support.
       -p        Preserve imgur's naming. (Warning! This will not retain order.)
       -s        Silent mode.
 
-Thanks to everyone in this thread who helped me out.
-http://redd.it/webn1
-Special Thanks goes to Reddit users:
-  Ihasn and Skaarj for help on the base code during the early stages.
-  invisiblescars for the idea and original code for a kde4 context menu.
+Thanks to everyone in this thread who helped me out.  
+http://redd.it/webn1  
+Special Thanks goes to Reddit users:  
+  /u/Ihasn and /u/Skaarj for help on the base code during the early stages.  
+  /u/invisiblescars for the idea and original code for a kde4 context menu.
 
-Compatible with:
-  Linux
-  Unix
-  OS X
+Compatible with Linux, Unix, and OS X  
+Cygwin remains untested.
 
-USAGE
+Usage
 -----
 
 The script was created so that all that you need to do is copy+paste the address
@@ -40,10 +38,10 @@ text file with imgur album URLs seperated by new lines
 
 `./imgur.bash -m Imgur-Albums-List.txt`
 
-Special note: If you do use the -m flag it must be the last option.
+Special note: If you do use the -m flag it must be the last option.  
 E.X. `./imgur.bash -scm Imgur-Albums-List.txt`
 
-INSTALLATION
+Installation
 ------------
 
 This is only if you want to reference the script without having it in the
@@ -58,27 +56,28 @@ directory you want the imgur album.
     export PATH
 
 To use:
-`imgur http://www.imgur.com/a/XXXXX`
+`imgur imgur.com/a/XXXXX`
 
 KDE
 ---
 
 There is a file named imgur.desktop with you in mind. Simply copy to your local
 `kde4-config --path services` location and make sure it's executable. `chmod +x
-imgur.desktop.`
+imgur.desktop`.
 
 To use: Simply copy the url of an imgur album into your clipboard and right
 click on an empty area in dolphin. Under actions you should see "Imgur Album
 DL".
 
-EXTRA
+Please note, this will only work if you have installed the script in the
+INSTALLATION part of this readme.
+
+Extra
 -----
 
 I wanted to write a script that would ensure that each image is in the proper
 order which you can't do by clicking the "Download" button on imgur albums.
-Clicking the "Download" link on imgur albums does not save the order.
-
-Example album: http://imgur.com/a/NhmjT/all#0
+Clicking the "Download" link on imgur albums does not save the order. [Example album](http://imgur.com/a/NhmjT/all#0)
 
 This script was made with the intent to be used without any requirements and
 will work on a fresh install of a minimal system. As long as you have /bin/bash

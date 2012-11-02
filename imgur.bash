@@ -91,11 +91,13 @@ do
 done
 
 
+# set gallery_url to last argument if we're not downloading multiple albums.
 if [[ "$multiple_urls" == "FALSE" ]]
 then
   gallery_url[0]="${@: -1}"
 fi
 
+# make sure gallery_url isn't empty.
 if [[ -z ${gallery_url[0]} ]]
 then
   usage
@@ -104,17 +106,15 @@ fi
 
 if [[ "$gallery_url[0]" =~ ".imgur.com" ]]
 then
-  url="${gallery_url[0]}"
-  album_title=${url#*//}
-  album_title=${album_title%.imgur*}
-  curl -s $url > $htmltemp
+  curl -s "${gallery_url[0]}" > $htmltemp
 
   gallery_url=( $(grep "imgur.com/a/" $htmltemp |\
     awk -F\/\/ '{print $2}' | cut -c 1-17) ) 
 
-  echo $url >> "permalink.txt"
+  echo $main_url >> "permalink.txt"
 fi
 
+url=
 for url in ${gallery_url[@]}
 do
   if [[ "$url" =~ "imgur.com/a/" ]]
