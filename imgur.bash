@@ -29,7 +29,7 @@ NAME
 SYNOPSIS
     bash imgur.bash [-cps] URL
     bash imgur.bash -m FILE
-    After installation simply replace `bash imgur.bash` with `imgur`.
+    After installation simply replace "bash imgur.bash" with "imgur"
 
 DESCRIPTION
     This is a 100% Bash script used to download imgur albums while making
