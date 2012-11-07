@@ -11,7 +11,8 @@ folderexists="TRUE"
 multiple_urls="FALSE"
 sanitize="FALSE"
 preserve="FALSE"
-curl_args="-#"
+silent_flag="FALSE"
+curl_args="-s"
 image_name=""
 clean=""
 data_index=-1
@@ -79,8 +80,9 @@ do
       # is included here for the sake of completion.
       ;;
     s)
-      curl_args="-s"
       # Run silently.
+      curl_args="-s"
+      silent_flag="TRUE"
       ;;
     ?)
       echo
@@ -90,7 +92,6 @@ do
   esac
 done
 
-curl_args="-s"
 # set gallery_url to last argument if we're not downloading multiple albums.
 if [[ "$multiple_urls" == "FALSE" ]]
 then
@@ -154,6 +155,7 @@ do
       mkdir -p "$album_title"
     fi
 
+    # Save link to album in a text file with the images.
     echo "$url" >> "$album_title"/"permalink.txt"
 
     for image_url in $(awk -F\" '/data-src/ {print $10}' $htmltemp | sed '/^$/d')
@@ -181,13 +183,20 @@ do
       curl $curl_args $image_url > "$album_title"/$image_name ||
         printf "failed to download: $image_url" >> $logfile
 
+      # Ask if we are preserving Imgur naming conventions.
       if [[ "$preserve" == "FALSE" ]]
       then
         mv "$album_title"/$image_name \
           "$album_title"/$(printf %05d.%s ${image_name%.*} ${image_name##*.})
       fi
 
-      echo -ne $(seq -s# $count | tr -d '[:digit:]')
+      # Insert one progress bar as opposed to multiple cURL calls.
+      if [[ $silent_flag == "FALSE" ]]
+      then
+        # hash marks are representative of one image downloaded.
+        # seems to add one extra has than necessary. Not a critical bug.
+        echo -ne $(seq -s# $count | tr -d '[:digit:]')
+      fi
       let count=$count+1;
     done
   else
