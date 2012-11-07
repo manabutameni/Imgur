@@ -90,7 +90,7 @@ do
   esac
 done
 
-
+curl_args="-s"
 # set gallery_url to last argument if we're not downloading multiple albums.
 if [[ "$multiple_urls" == "FALSE" ]]
 then
@@ -115,6 +115,7 @@ then
 fi
 
 url=
+gallery_len=${#gallery_url[@]}
 for url in ${gallery_url[@]}
 do
   if [[ "$url" =~ "imgur.com/a/" ]]
@@ -186,6 +187,7 @@ do
           "$album_title"/$(printf %05d.%s ${image_name%.*} ${image_name##*.})
       fi
 
+      echo -ne $(seq -s# $count | tr -d '[:digit:]')
       let count=$count+1;
     done
   else
