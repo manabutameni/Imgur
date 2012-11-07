@@ -194,7 +194,7 @@ do
       if [[ $silent_flag == "FALSE" ]]
       then
         # hash marks are representative of one image downloaded.
-        # seems to add one extra has than necessary. Not a critical bug.
+        # seems to add one extra hash than necessary. Not a critical bug.
         echo -ne $(seq -s# $count | tr -d '[:digit:]')
       fi
       let count=$count+1;
