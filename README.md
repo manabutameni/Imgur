@@ -2,10 +2,9 @@ About
 -----
 
 This is a 100% Bash script used to download imgur albums while making sure that
-the order of the pictures is retained. The script now allows for multi-album
-support.
+the order of the pictures is retained.
 
-    usage: `bash imgur.bash [-cpsm] [file] URL`
+    usage: bash imgur.bash [-cps] [-m file] URL
     This script is used solely to download imgur albums.
 
     OPTIONS:
@@ -70,7 +69,7 @@ click on an empty area in dolphin. Under actions you should see "Imgur Album
 DL".
 
 Please note, this will only work if you have installed the script in the
-INSTALLATION part of this readme.
+Installation part of this readme.
 
 Extra
 -----
@@ -82,6 +81,10 @@ Clicking the "Download" link on imgur albums does not save the order. [Example a
 This script was made with the intent to be used without any requirements and
 will work on a fresh install of a minimal system. As long as you have /bin/bash
 and the mktemp and curl commands this script should work out of the box.
+
+This script can also download entire subreddit's worth of
+albums. [Example1](http://reactiongifsmods.imgur.com/) and
+[Example2](http://imgur.com/r/reactiongifs). 
 
 #### What this script does not do: 
 
