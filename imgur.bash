@@ -1,4 +1,5 @@
 #!/bin/bash
+# Requirements: basename, mktemp, curl, awk, sed, seq, bash
 
 # htmltemp holds .html file for quick, multiple searches
 # logfile holds failed curl downloads
@@ -17,13 +18,12 @@ image_name=""
 clean=""
 data_index=-1
 count=0
-
+url=
 gallery_url=('') 
 
-usage()
+long_desc()
 {
   cat << EOF
-
 NAME
     imgur - a simple album downloader
 
@@ -51,33 +51,71 @@ EXAMPLES
 AUTHOR
     manabutameni
     https://github.com/manabutameni/Imgur
-
 EOF
+}
+
+short_desc()
+{
+  cat << EOF
+usage: $0 [-cps] URL
+usage: $0 [-m]  file
+EOF
+}
+
+# ============================================================================ #
+# Evaluate a floating point number expression.
+#
+# Floating point math courtesy of:
+# http://www.linuxjournal.com/content/floating-point-math-bash
+# ============================================================================ #
+function float_eval()
+{
+  float_scale=2
+
+  local stat=0
+  local result=0.0
+  if [[ $# -gt 0 ]]; then
+    result=$(echo "scale=$float_scale; $*" | bc -q 2>/dev/null)
+    stat=$?
+    if [[ $stat -eq 0  &&  -z "$result" ]]; then stat=1; fi
+  fi
+  echo $result
+  return $stat
+}
+# ============================================================================ #
+# End float_eval function.
+# ============================================================================ #
+
+printf "[%60s]      \r" " "
+function progress_bar()
+{
+  printf "[%60s] $1\045\r" " "
+  printf "[%${2}s\r" " " | tr ' ' '#'
 }
 
 while getopts "hm:cps" OPTION
 do
   case $OPTION in
     h)
-      usage
+      long_desc
       exit 0
       ;;
     m)
-      multiple_urls="TRUE"
-      gallery_url=( $(cat "$OPTARG") )
       # This will output all imgur ablum urls from plain text <File> into the
       # array $gallery_url. Note: urls must be separated by newline.
+      multiple_urls="TRUE"
+      gallery_url=( $(cat "$OPTARG") )
       ;;
     c)
-      sanitize="TRUE"
       # Clean non alpha-numeric characters from album name.
       # Useful for the (rare) albums named !!!OMG$)(@@*$@$%@
+      sanitize="TRUE"
       ;;
     p)
-      preserve="TRUE"
       # Preserve Imgur's naming scheme. Please note that this will not keep the
       # order of the images. While this does break the spirit of the script it
       # is included here for the sake of completion.
+      preserve="TRUE"
       ;;
     s)
       # Run silently.
@@ -85,23 +123,21 @@ do
       silent_flag="TRUE"
       ;;
     ?)
-      echo
-      echo "usage: $0 [-cps] URL..."
-      echo "usage: $0 [-m]  file..."
-      echo
+      short_desc
+      exit 0
   esac
 done
 
-# set gallery_url to last argument if we're not downloading multiple albums.
 if [[ "$multiple_urls" == "FALSE" ]]
 then
+  # set gallery_url to last argument if we're not downloading multiple albums.
   gallery_url[0]="${@: -1}"
 fi
 
 # make sure gallery_url isn't empty.
 if [[ -z ${gallery_url[0]} ]]
 then
-  usage
+  long_desc
   exit 1
 fi
 
@@ -109,102 +145,115 @@ if [[ "$gallery_url[0]" =~ ".imgur.com" ]]
 then
   curl -s "${gallery_url[0]}" > $htmltemp
 
-  gallery_url=( $(grep "imgur.com/a/" $htmltemp |\
-    awk -F\/\/ '{print $2}' | cut -c 1-17) ) 
+  # Doing it this way allows for recursively searching the html for multiple
+  # gallery URLs. Allowing for complete downloads of albums inside albums.
+  gallery_url=( $(grep -oh "imgur.com/a/[a-zA-Z0-9]\{5\}" $htmltemp) )
 
   echo $main_url >> "permalink.txt"
 fi
 
-url=
-gallery_len=${#gallery_url[@]}
 for url in ${gallery_url[@]}
 do
   if [[ "$url" =~ "imgur.com/a/" ]]
   then
-    # Silent here because we are not downloading an image.
+    # Download the html source to a temp file for quick parsing.
     curl -s $url > $htmltemp
     # ;exit is needed since sometimes data-title appears twice
-    album_title=$(awk -F\" '/data-title/ {print $6; exit}' $htmltemp)
+    folder_name=$(awk -F\" '/data-title/ {print $6; exit}' $htmltemp)
 
-    if [[ "$sanitize" == "TRUE" ]] # remove special characters
-    then
-      clean=${album_title//_/} #turn / into _
+    if [[ "$sanitize" == "TRUE" ]]
+    then # remove special characters
+      clean=${folder_name//_/} #turn / into _
       clean=${clean// /_} #turn spaces into _
-      album_title="${clean//[^a-zA-Z0-9_]/}" # remove all special chars
+      folder_name="${clean//[^a-zA-Z0-9_]/}" # remove all special chars
     else
-      album_title=$(sed 's/\//_/g' <<< $album_title) # ensure no / chars
+      folder_name=$(sed 's/\//_/g' <<< $folder_name) # ensure no / chars
     fi
 
-    # if preserve flag has been raised or $album_title is empty
-    if [[ "$preserve" == "TRUE" ]] || [[ -z "$album_title" ]]
-    then
-      # Find the /a/ in the url and cut out the last bit of the url
-      # for the folder name. Hope this works every time. :/
-      album_title=$(awk -F\/ '{print $5}' <<< "$url")
+    if [[ "$preserve" == "TRUE" ]] || [[ -z "$folder_name" ]]
+    then # Create a folder name based on the URL.
+      folder_name=$(basename "$url" | sed 's/\#.*//g')
     fi
 
     # It only takes one album named Pictures to possibly screw up
     # an entire folder. This will also save images to a new directory
     # if the script is used twice on the same album in the same folder.
-    test -d "$album_title" || folderexists="FALSE"
+    test -d "$folder_name" || folderexists="FALSE"
     if [[ "$folderexists" == "TRUE" ]]
     then
-      tempdir=$(mktemp -d "$album_title"_XXXXX) || exit 1
-      album_title="$tempdir"
+      tempdir=$(mktemp -d "$folder_name"_XXXXX) || exit 1
+      folder_name="$tempdir"
     else
-      mkdir -p "$album_title"
+      mkdir -p "$folder_name"
     fi
 
     # Save link to album in a text file with the images.
-    echo "$url" >> "$album_title"/"permalink.txt"
+    echo "$url" >> "$folder_name"/"permalink.txt"
 
+    # Get total number of images to properly display percent done.
+    total_images=0
     for image_url in $(awk -F\" '/data-src/ {print $10}' $htmltemp | sed '/^$/d')
     do
-      # Some albums have the source images out of order, this fixes that.
+      let total_images=$total_images+1
+    done
+
+    # Iterate over all images found.
+    for image_url in $(awk -F\" '/data-src/ {print $10}' $htmltemp | sed '/^$/d')
+    do
+      # Some albums have the thumbnail images out of order, this fixes that.
       data_index=$(grep $image_url $htmltemp | awk -F\" '{print $12}')
       data_index=$(echo $data_index)
       let data_index=$data_index+1
 
-      # Ensure no images are thumbnails
-      # Always works because all files currently in $image_url are thumbnails.
+      # Ensure no images are thumbnails.
+      # Always works because all images that could be in $image_url are thumbnails.
       image_url=$(sed 's/s.jpg/.jpg/g' <<< "$image_url")
 
       if [[ "$preserve" == "TRUE" ]]
-      then
-        # Preserve imgur naming conventions.
-        # Note: Does not guarantee images to be properly sorted.
-        image_name=${image_url:(-9):5}
-      else
-        image_name=$data_index
+      then # Preserve imgur naming conventions.
+        image_name=$(basename "$image_url")
+      else # name images based on index value.
+        image_name=$data_index.jpg
       fi
 
-      # Note to future me: Perhaps make this context sensitive instead of .jpg
-      image_name=$image_name.jpg
-      curl $curl_args $image_url > "$album_title"/$image_name ||
-        printf "failed to download: $image_url" >> $logfile
+      # This is where the file is actually downloaded
+      curl $curl_args $image_url > "$folder_name"/$image_name ||
+        printf "failed to download: $image_url \n" >> $logfile
 
-      # Ask if we are preserving Imgur naming conventions.
       if [[ "$preserve" == "FALSE" ]]
-      then
-        mv "$album_title"/$image_name \
-          "$album_title"/$(printf %05d.%s ${image_name%.*} ${image_name##*.})
+      then # rename current file to force {1..11} sorting.
+        new_image_name="$(printf %05d.%s ${image_name%.*} ${image_name##*.})"
+        # brief expl:     force 5 digits   basename         extension
+        mv "$folder_name"/"$image_name" "$folder_name"/"$new_image_name"
+      else
+        # This is needed so the next if statement can always get the right file.
+        new_image_name="$image_name"
       fi
 
-      # Insert one progress bar as opposed to multiple cURL calls.
-      if [[ $silent_flag == "FALSE" ]]
-      then
-        # hash marks are representative of one image downloaded.
-        # seems to add one extra hash than necessary. Not a critical bug.
-        echo -ne $(seq -s# $count | tr -d '[:digit:]')
+      # Read the first three bytes of the file and see if they contain "GIF"
+      # Currently unsure if this will work 100% of the time, but it was the
+      # best solution I knew of without forcing people to download imagemagick.
+      if [[ $(head -c 3 "$folder_name"/"$new_image_name") == "GIF" ]]
+      then # rename the image with the proper extension.
+        mv "$folder_name"/"$new_image_name" \
+          "$folder_name"/"$(basename $new_image_name .jpg).gif"
       fi
+      
       let count=$count+1;
+      if [[ $silent_flag == "FALSE" && $count != 0 ]]
+      then # display download progress.
+        # echo -ne $(seq -s. $count | tr -d '[:digit:]')
+        percent=$(float_eval "100 * $count / $total_images")
+        percent=${percent/.*}
+        prog=$(float_eval "60 * $count / $total_images")
+        if [[ $percent =~ ^[0-9]+$ ]]
+        then
+          progress_bar $percent $prog
+        fi
+      fi
     done
   else
-    echo
     echo "Must be an album from imgur.com"
-    echo "usage: $0 [-cps] URL..."
-    echo "usage: $0 [-m]  file..."
-    echo
     exit 1
   fi
 done
