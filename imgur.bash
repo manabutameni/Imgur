@@ -3,6 +3,8 @@
 
 # htmltemp holds .html file for quick, multiple searches
 # logfile holds failed curl downloads
+
+# Declarations
 htmlname="$(basename $0)"
 logname=$htmlname.log
 htmltemp=$(mktemp -t ${htmlname}.XXXXX) || exit 1
@@ -18,6 +20,7 @@ data_index=-1
 count=0
 gallery_url=('') 
 
+# Functions
 long_desc()
 {
   cat | less << EOF
@@ -56,11 +59,8 @@ usage: $0 [-m file]
 EOF
 }
 
-# ============================================================================ #
 function float_eval()
 {
-  local stat=0
-    stat=$?
   # Evaluate a floating point number expression.
   echo $(echo "scale=2; $*" | bc -q 2> /dev/null)
 }
@@ -79,7 +79,8 @@ function progress_bar()
   fi
 }
 
-while getopts "hm:cps" OPTION
+# Program begins
+while getopts "hm:cps:" OPTION
 do
   case $OPTION in
     h)
@@ -108,22 +109,25 @@ do
       curl_args="-s"
       silent_flag="TRUE"
       ;;
-    ?)
+    :)
       short_desc
       exit 0
+      ;;
+    ?)
+      short_desc
+      exit 1
   esac
 done
 
 if [[ "$multiple_urls" == "FALSE" ]]
-then
-  # set gallery_url to last argument if we're not downloading multiple albums.
+then # set gallery_url to last argument if not downloading multiple albums.
   gallery_url[0]="${@: -1}"
 fi
 
 # make sure gallery_url isn't empty.
 if [[ -z ${gallery_url[0]} ]]
 then
-  long_desc
+  short_desc
   exit 1
 fi
 
@@ -156,8 +160,8 @@ do
       folder_name=$(sed 's/\//_/g' <<< $folder_name) # ensure no / chars
     fi
 
-    if [[ "$preserve" == "TRUE" ]] || [[ -z "$folder_name" ]]
-    then # Create a folder name based on the URL.
+    if [[ "$preserve" == "TRUE" ]] || [ -z "$folder_name" ]
+    then # Create a name for a folder name based on the URL.
       folder_name=$(basename "$url" | sed 's/\#.*//g')
     fi
 
@@ -206,14 +210,14 @@ do
       curl $curl_args $image_url > "$folder_name"/$image_name ||
         printf "failed to download: $image_url \n" >> $logfile
 
-      if [[ "$preserve" == "FALSE" ]]
+      if [[ "$preserve" == "TRUE" ]]
       then # rename current file to force {1..11} sorting.
+        # This is needed so the next if statement can always get the right file.
+        new_image_name="$image_name"
+      else
         new_image_name="$(printf %05d.%s ${image_name%.*} ${image_name##*.})"
         # brief expl:     force 5 digits   basename         extension
         mv "$folder_name"/"$image_name" "$folder_name"/"$new_image_name"
-      else
-        # This is needed so the next if statement can always get the right file.
-        new_image_name="$image_name"
       fi
 
       # Read the first three bytes of the file and see if they contain "GIF"
@@ -243,14 +247,17 @@ do
   fi
 done
 
-echo 
+if [[ "$silent_flag" == "FALSE" ]]
+then # Echo output
+  echo
+  echo "Finished with $count files downloaded."
+fi
 
 if [[ -s "$logfile" ]]
 then
   echo "Exited with errors, check $logfile"
   exit 1
 else
-  echo "Finished with $count files downloaded."
   rm $htmltemp
   rm $logfile
   exit 0
