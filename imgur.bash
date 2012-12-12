@@ -14,11 +14,8 @@ sanitize="FALSE"
 preserve="FALSE"
 silent_flag="FALSE"
 curl_args="-s"
-image_name=""
-clean=""
 data_index=-1
 count=0
-url=
 gallery_url=('') 
 
 long_desc()
@@ -63,30 +60,14 @@ EOF
 }
 
 # ============================================================================ #
-# Evaluate a floating point number expression.
-#
-# Floating point math courtesy of:
-# http://www.linuxjournal.com/content/floating-point-math-bash
-# ============================================================================ #
 function float_eval()
 {
-  float_scale=2
-
   local stat=0
-  local result=0.0
-  if [[ $# -gt 0 ]]; then
-    result=$(echo "scale=$float_scale; $*" | bc -q 2>/dev/null)
     stat=$?
-    if [[ $stat -eq 0  &&  -z "$result" ]]; then stat=1; fi
-  fi
-  echo $result
-  return $stat
+  # Evaluate a floating point number expression.
+  echo $(echo "scale=2; $*" | bc -q 2> /dev/null)
 }
-# ============================================================================ #
-# End float_eval function.
-# ============================================================================ #
 
-printf "[%60s]      \r" " "
 function progress_bar()
 {
   printf "[%60s] $1\045\r" " "
