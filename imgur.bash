@@ -67,8 +67,16 @@ function float_eval()
 
 function progress_bar()
 {
-  printf "[%60s] $1\045\r" " "
-  printf "[%${2}s\r" " " | tr ' ' '#'
+  printf "[%60s]       \r" " " # clear each time in case of accidental input.
+  printf "[%60s] $1\045\r" " " # Print off the percent completed passed to $1
+  printf "[%${2}s>\r" " " | tr ' ' '=' # Print progress bar as '=>'
+  if [[ $2 == "60.00" ]]
+  then #Display completed progress bar.
+    # Might incorrectly display on very large downloads.
+    # ===>] might become ===> eliminating the right bracket.
+    # More testing necessary.
+    printf "[%${2}s]\r" " " | tr ' ' '='
+  fi
 }
 
 while getopts "hm:cps" OPTION
