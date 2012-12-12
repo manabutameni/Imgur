@@ -52,7 +52,7 @@ short_desc()
 {
   cat << EOF
 usage: $0 [-cps] URL
-usage: $0 [-m]  file
+usage: $0 [-m file]
 EOF
 }
 
