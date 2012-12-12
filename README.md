@@ -68,7 +68,10 @@ Using setup.exe install the following:
 
 Then run the Cygwin terminal and paste the following:
 
-    
+mkdir -p /usr/local/bin
+cd /usr/local/bin
+curl https://raw.github.com/manabutameni/Imgur/master/imgur.bash -o imgur
+chmod +x imgur
 
 To use:
 `imgur imgur.com/a/XXXXX`
