@@ -20,21 +20,14 @@ gallery_url=('')
 
 long_desc()
 {
-  cat << EOF
+  cat | less << EOF
 NAME
     imgur - a simple album downloader
 
 SYNOPSIS
-    bash imgur.bash [-cps] URL
-    bash imgur.bash -m FILE
-    After installation simply replace "bash imgur.bash" with "imgur"
+    Download albums from http://imgur.com while retaining order.
 
-DESCRIPTION
-    This is a 100% Bash script used to download imgur albums while making
-    sure that the order of the pictures is retained.
-
-    The following options are available:
-
+OPTIONS
     -h        Show this message.
     -m <File> Download multiple albums found in <File>.
     -c        Clean nonalphanumeric characters from the album's name.
@@ -42,12 +35,16 @@ DESCRIPTION
     -s        Silent mode.
 
 EXAMPLES
+    bash imgur.bash [-cps] URL
+    bash imgur.bash -m FILE
+
     bash imgur.bash http://imgur.com/a/fG58m#0
     bash imgur.bash reactiongifsarchive.imgur.com
 
 AUTHOR
     manabutameni
     https://github.com/manabutameni/Imgur
+
 EOF
 }
 
