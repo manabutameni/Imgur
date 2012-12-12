@@ -46,6 +46,8 @@ Installation
 This is only if you want to reference the script without having it in the
 directory you want the imgur album.
 
+## Nix like operating systems
+
     sudo mkdir -p /usr/local/bin 
     sudo chown `whoami` /usr/local/bin
     cd /usr/local/bin
@@ -53,6 +55,20 @@ directory you want the imgur album.
     chmod +x imgur
     PATH=$PATH:/usr/local/bin # only if you haven't done this already
     export PATH
+
+## Windows under cygwin
+
+[Cygwin website](http://cygwin.com/install.html)  
+Using setup.exe install the following:
+* curl
+* sed
+* gawk
+* bash
+* grep
+
+Then run the Cygwin terminal and paste the following:
+
+    
 
 To use:
 `imgur imgur.com/a/XXXXX`

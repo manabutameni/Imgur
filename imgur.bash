@@ -1,5 +1,5 @@
 #!/bin/bash
-# Requirements: basename, mktemp, curl, awk, sed, seq, bash
+# Requirements: basename, mktemp, curl, awk, sed, bash
 
 # htmltemp holds .html file for quick, multiple searches
 # logfile holds failed curl downloads
@@ -242,7 +242,6 @@ do
       let count=$count+1;
       if [[ $silent_flag == "FALSE" && $count != 0 ]]
       then # display download progress.
-        # echo -ne $(seq -s. $count | tr -d '[:digit:]')
         percent=$(float_eval "100 * $count / $total_images")
         percent=${percent/.*}
         prog=$(float_eval "60 * $count / $total_images")
