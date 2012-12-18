@@ -62,7 +62,7 @@ EOF
 function float_eval()
 {
   # Evaluate a floating point number expression.
-  echo $(echo "scale=2; $*" | bc -q 2> /dev/null)
+  echo "$(echo "scale=2; $*" | bc -q 2> /dev/null)"
 }
 
 function progress_bar()
@@ -72,9 +72,6 @@ function progress_bar()
   printf "[%${2}s>\r" " " | tr ' ' '=' # Print progress bar as '=>'
   if [[ $2 == "60.00" ]]
   then #Display completed progress bar.
-    # Might incorrectly display on very large downloads.
-    # ===>] might become ===> eliminating the right bracket.
-    # More testing necessary.
     printf "[%${2}s]\r" " " | tr ' ' '='
   fi
 }
@@ -135,7 +132,7 @@ if [[ "$gallery_url[0]" =~ ".imgur.com" ]]
 then
   curl -s "${gallery_url[0]}" > $htmltemp
 
-  # Doing it this way allows for recursively searching the html for multiple
+  # Downloading html file for recursively searching the html for multiple
   # gallery URLs. Allowing for complete downloads of albums inside albums.
   gallery_url=( $(grep -oh "imgur.com/a/[a-zA-Z0-9]\{5\}" $htmltemp) )
 
