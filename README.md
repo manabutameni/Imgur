@@ -4,7 +4,7 @@ About
 This is a 100% Bash script used to download imgur albums while making sure that
 the order of the pictures is retained.
 
-    usage: bash imgur.bash [-cps] [-m file] URL
+    usage: bash imgur.sh [-cps] [-m file] URL
     This script is used solely to download imgur albums.
 
     OPTIONS:
@@ -22,16 +22,16 @@ Usage
 The script was created so that all that you need to do is copy+paste the address
 bar link into the terminal.
 
-    chmod +x imgur.bash
-    ./imgur.bash -h
+    chmod +x imgur.sh
+    ./imgur.sh -h
 
 If you want to use the multiple-files feature then you will need to have a plain
 text file with imgur album URLs seperated by new lines
 
-`./imgur.bash -m Imgur-Albums-List.txt`
+`./imgur.sh -m Imgur-Albums-List.txt`
 
 Special note: If you do use the -m flag it must be the last option.  
-E.X. `./imgur.bash -scm Imgur-Albums-List.txt`
+E.X. `./imgur.sh -scm Imgur-Albums-List.txt`
 
 Installation
 ------------
@@ -44,7 +44,7 @@ directory you want the imgur album.
     sudo mkdir -p /usr/local/bin 
     sudo chown `whoami` /usr/local/bin
     cd /usr/local/bin
-    curl https://raw.github.com/manabutameni/Imgur/master/imgur.bash -o imgur
+    curl https://raw.github.com/manabutameni/Imgur/master/imgur.sh -o imgur
     chmod +x imgur
     PATH=$PATH:/usr/local/bin # only if you haven't done this already
     export PATH
@@ -63,7 +63,7 @@ Then run the Cygwin terminal and paste the following:
 
     mkdir -p /usr/local/bin
     cd /usr/local/bin
-    curl https://raw.github.com/manabutameni/Imgur/master/imgur.bash -o imgur
+    curl https://raw.github.com/manabutameni/Imgur/master/imgur.sh -o imgur
     chmod +x imgur
 
 To use:
