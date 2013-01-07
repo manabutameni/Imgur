@@ -36,7 +36,7 @@ E.X. `./imgur.sh -scm Imgur-Albums-List.txt`
 Installation
 ------------
 
-Ensure you have the required software. See [Requirements](#req).
+Ensure you have the required software. See [Requirements](#requirements).
 
 This is only if you want to reference the script without having it in the
 directory you want the imgur album.
