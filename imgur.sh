@@ -1,5 +1,5 @@
 #!/bin/bash
-# Requirements: bash, basename, mktemp, curl, awk, sed, test
+# Requirements: bash, basename, mktemp, curl, (g)awk, sed
 
 # htmltemp holds .html file for quick, multiple searches
 # logfile holds failed curl downloads
