@@ -49,6 +49,8 @@ directory you want the imgur album.
     PATH=$PATH:/usr/local/bin # only if you haven't done this already
     export PATH
 
+Do note that you will need to add the last two lines to your ~/.bashrc
+
 ### Windows under cygwin
 
 [Cygwin website](http://cygwin.com/install.html)  
