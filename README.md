@@ -15,7 +15,6 @@ the order of the pictures is retained.
       -s        Silent mode.
 
 Compatible with Linux, Unix, and OS X  
-Cygwin remains untested.
 
 Usage
 -----
