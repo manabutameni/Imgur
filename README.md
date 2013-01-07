@@ -36,6 +36,8 @@ E.X. `./imgur.sh -scm Imgur-Albums-List.txt`
 Installation
 ------------
 
+Ensure you have the required software. See [Requirements](#req).
+
 This is only if you want to reference the script without having it in the
 directory you want the imgur album.
 
@@ -93,16 +95,12 @@ order which you can't do by clicking the "Download" button on imgur albums.
 Clicking the "Download" link on imgur albums does not save the order.
 [Example album](http://imgur.com/a/NhmjT/all#0)
 
-This script was made with the intent to be used with minimal requirements and
-will work on a fresh install of a minimal system. As long as you have /bin/bash
-and the mktemp and curl commands this script should work out of the box.
-
 This script can also download entire subreddit's worth of
 albums. [Example1](http://reactiongifsmods.imgur.com/) and
 [Example2](http://imgur.com/r/reactiongifs). 
 
 
-##### Requirements
+##### Requirements<a id="req"/>
 
 The following need to be installed for this script to work:  
 bash, basename, mktemp, curl, (g)awk, sed
