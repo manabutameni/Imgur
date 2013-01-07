@@ -14,12 +14,6 @@ the order of the pictures is retained.
       -p        Preserve imgur's naming. (Warning! This will not retain order.)
       -s        Silent mode.
 
-Thanks to everyone in this thread who helped me out.  
-http://redd.it/webn1  
-Special Thanks goes to Reddit users:  
-  /u/Ihasn and /u/Skaarj for help on the base code during the early stages.  
-  /u/invisiblescars for the idea and original code for a kde4 context menu.
-
 Compatible with Linux, Unix, and OS X  
 Cygwin remains untested.
 
@@ -105,7 +99,7 @@ This script can also download entire subreddit's worth of
 albums. [Example1](http://reactiongifsmods.imgur.com/) and
 [Example2](http://imgur.com/r/reactiongifs). 
 
-#### What this script does not do: 
+##### What this script does not do: 
 
 This script will not update an album. For example, if there's an album that is
 frequently updated that you enjoy following, this script (by design) cannot and
@@ -115,3 +109,11 @@ current working directory does not contain a directory with a similar name.
 If it does, than it will create a new directory with random digits to prevent
 clobbering an existing directory. Just imagine if you tried downloading an album
 that was titled "Pictures".
+
+##### Credits
+
+Thanks to everyone in this thread who helped me out.  
+http://redd.it/webn1  
+Special Thanks goes to Reddit users:  
+  /u/Ihasn and /u/Skaarj for help on the base code during the early stages.  
+  /u/invisiblescars for the idea and original code for a kde4 context menu.
