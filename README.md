@@ -90,9 +90,10 @@ Extra
 
 I wanted to write a script that would ensure that each image is in the proper
 order which you can't do by clicking the "Download" button on imgur albums.
-Clicking the "Download" link on imgur albums does not save the order. [Example album](http://imgur.com/a/NhmjT/all#0)
+Clicking the "Download" link on imgur albums does not save the order.
+[Example album](http://imgur.com/a/NhmjT/all#0)
 
-This script was made with the intent to be used without any requirements and
+This script was made with the intent to be used with minimal requirements and
 will work on a fresh install of a minimal system. As long as you have /bin/bash
 and the mktemp and curl commands this script should work out of the box.
 
@@ -100,16 +101,18 @@ This script can also download entire subreddit's worth of
 albums. [Example1](http://reactiongifsmods.imgur.com/) and
 [Example2](http://imgur.com/r/reactiongifs). 
 
+
+##### Requirements
+
+The following need to be installed for this script to work:  
+bash, basename, mktemp, curl, (g)awk, sed
+
 ##### What this script does not do: 
 
 This script will not update an album. For example, if there's an album that is
 frequently updated that you enjoy following, this script (by design) cannot and
-will not update that album with the newest images. When you download an album
-this script will check for that album's name. Then it will make sure that the
-current working directory does not contain a directory with a similar name.
-If it does, than it will create a new directory with random digits to prevent
-clobbering an existing directory. Just imagine if you tried downloading an album
-that was titled "Pictures".
+will not update that album with the newest images. Just imagine if you tried
+downloading an album that was titled "Pictures".
 
 ##### Credits
 
