@@ -1,5 +1,5 @@
 #!/bin/bash
-# Requirements: basename, mktemp, curl, awk, sed, bash
+# Requirements: bash, basename, mktemp, curl, awk, sed, test
 
 # htmltemp holds .html file for quick, multiple searches
 # logfile holds failed curl downloads
@@ -132,11 +132,10 @@ if [[ "$gallery_url[0]" =~ ".imgur.com" ]]
 then
   curl -s "${gallery_url[0]}" > $htmltemp
 
-  # Downloading html file for recursively searching the html for multiple
-  # gallery URLs. Allowing for complete downloads of albums inside albums.
+  # Downloading html file for recursively searching for multiple gallery URLs.
+  # Allowing for complete downloads of albums inside albums.
+  # This will need to be updated when Imgur hits six character album URLs
   gallery_url=( $(grep -oh "imgur.com/a/[a-zA-Z0-9]\{5\}" $htmltemp) )
-
-  echo $main_url >> "permalink.txt"
 fi
 
 for url in ${gallery_url[@]}
@@ -166,6 +165,7 @@ do
     # an entire folder. This will also save images to a new directory
     # if the script is used twice on the same album in the same folder.
     test -d "$folder_name" || folderexists="FALSE"
+
     if [[ "$folderexists" == "TRUE" ]]
     then
       tempdir=$(mktemp -d "$folder_name"_XXXXX) || exit 1
@@ -255,6 +255,7 @@ then
   echo "Exited with errors, check $logfile"
   exit 1
 else
+  # Cleaning up
   rm $htmltemp
   rm $logfile
   exit 0
