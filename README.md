@@ -39,7 +39,7 @@ Installation
 This is only if you want to reference the script without having it in the
 directory you want the imgur album.
 
-## Nix like operating systems
+### Nix like operating systems
 
     sudo mkdir -p /usr/local/bin 
     sudo chown `whoami` /usr/local/bin
@@ -49,7 +49,7 @@ directory you want the imgur album.
     PATH=$PATH:/usr/local/bin # only if you haven't done this already
     export PATH
 
-## Windows under cygwin
+### Windows under cygwin
 
 [Cygwin website](http://cygwin.com/install.html)  
 Using setup.exe install the following:
