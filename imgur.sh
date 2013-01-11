@@ -107,27 +107,27 @@ function progress_bar()
 while getopts ":dhcps" OPTION
 do
   case $OPTION in
-    d | debug)
+    d)
       # print debugging messages
       debug_flag="TRUE"
       ;;
-    h | help)
+    h)
       long_desc
       ;;
-    c | clean)
+    c)
       # Clean non alpha-numeric characters from album name.
       # Useful for the (rare) albums named !!!$)(@@*$@$%@
       debug Clean Flag Set
       sanitize="TRUE"
       ;;
-    p | preserve)
+    p)
       # Preserve Imgur's naming scheme. Please note that this will not keep the
       # order of the images. While this does break the spirit of the script it
       # is included here for the sake of completion.
       debug Preserve Flag Set
       preserve="TRUE"
       ;;
-    s | slient)
+    s)
       # Run silently.
       debug Silent Flag Set
       curl_args="-s"
