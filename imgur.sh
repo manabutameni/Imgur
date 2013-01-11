@@ -160,8 +160,6 @@ then
 fi
 
 # Program Begins
-# This will need to be updated when Imgur hits six character album URLs
-# gallery_url=( $(grep -oh "imgur.com/a/[a-zA-Z0-9]\{5\}" $htmltemp) )
 for url in ${gallery_url[@]}
 do
   debug '$url = ' $url
