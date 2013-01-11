@@ -6,8 +6,8 @@ the order of the pictures is retained.
 
 Compatible with Linux, Unix, OS X, and Windows under Cygwin.
 
-AUTHOR
-    manabutameni
+Author:  
+    manabutameni  
     https://github.com/manabutameni/Imgur
 
 Usage
@@ -16,7 +16,6 @@ Usage
 The script was created so that all that you need to do is copy+paste the address
 bar link into the terminal.
 
-    usage: 
     bash imgur.sh [-dcps] URL [URL]
     This script is used solely to download imgur albums.
 
@@ -27,15 +26,16 @@ bar link into the terminal.
         -s        Silent mode. Overrides debug mode.
         -d        Debug mode.
 
-Multiple albums can be downloaded as such: `bash imgur.sh URL1 URL2...`
+Multiple albums can be downloaded like so: `bash imgur.sh URL1 URL2...`
 
 Installation
 ------------
 
 Ensure you have the required software. See [Requirements](#requirements).
 
-This is only if you want to reference the script without having it in the
-directory you want the imgur album.
+This is only necessary if you want to run the script without having it in the
+same folder you want the imgur album, or if you want to install imgur.desktop
+for KDE.
 
 ### Nix like operating systems
 
