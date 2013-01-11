@@ -17,7 +17,6 @@ The script was created so that all that you need to do is copy+paste the address
 bar link into the terminal.
 
     bash imgur.sh [-dcps] URL [URL]
-    This script is used solely to download imgur albums.
 
     OPTIONS
         -h        Show this message.
