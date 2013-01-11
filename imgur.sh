@@ -2,7 +2,7 @@
 # Requirements: bash, basename, mktemp, curl, (g)awk, sed
 
 # htmltemp holds .html file for quick, multiple searches
-# logfile holds failed curl downloads
+# logfile holds failed cURL downloads
 
 # Declarations
 htmlname="$(basename $0)"
@@ -238,6 +238,11 @@ do
         fi
       fi
     done
+    if [[ "$silent_flag" == "FALSE" ]]
+    then # Echo output
+      echo
+      echo "Finished with $count files downloaded."
+    fi
   else
     echo "Must be an album from imgur.com"
     exit 1
