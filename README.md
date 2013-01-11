@@ -4,17 +4,11 @@ About
 This is a 100% Bash script used to download imgur albums while making sure that
 the order of the pictures is retained.
 
-    usage: bash imgur.sh [-cps] [-m file] URL
-    This script is used solely to download imgur albums.
+Compatible with Linux, Unix, OS X, and Windows under Cygwin.
 
-    OPTIONS:
-      -h        Show this message.
-      -m <File> Download multiple albums found in <File>.
-      -c        Clean nonalphanumeric characters from the album's name.
-      -p        Preserve imgur's naming. (Warning! This will not retain order.)
-      -s        Silent mode.
-
-Compatible with Linux, Unix, and OS X  
+AUTHOR
+    manabutameni
+    https://github.com/manabutameni/Imgur
 
 Usage
 -----
@@ -22,16 +16,18 @@ Usage
 The script was created so that all that you need to do is copy+paste the address
 bar link into the terminal.
 
-    chmod +x imgur.sh
-    ./imgur.sh -h
+    usage: 
+    bash imgur.sh [-dcps] URL [URL]
+    This script is used solely to download imgur albums.
 
-If you want to use the multiple-files feature then you will need to have a plain
-text file with imgur album URLs seperated by new lines
+    OPTIONS
+        -h        Show this message.
+        -c        Clean nonalphanumeric characters from the album's name.
+        -p        Preserve imgur's naming. (Warning! This will not retain order.)
+        -s        Silent mode. Overrides debug mode.
+        -d        Debug mode.
 
-`./imgur.sh -m Imgur-Albums-List.txt`
-
-Special note: If you do use the -m flag it must be the last option.  
-E.X. `./imgur.sh -scm Imgur-Albums-List.txt`
+Multiple albums can be downloaded as such: `bash imgur.sh URL1 URL2...`
 
 Installation
 ------------
@@ -48,10 +44,10 @@ directory you want the imgur album.
     cd /usr/local/bin
     curl https://raw.github.com/manabutameni/Imgur/master/imgur.sh -o imgur
     chmod +x imgur
-    PATH=$PATH:/usr/local/bin # only if you haven't done this already
+    PATH=$PATH:/usr/local/bin
     export PATH
 
-Do note that you will need to add the last two lines to your ~/.bashrc
+Do note that you will need to append the last two lines to your ~/.bashrc
 
 ### Windows under cygwin
 
@@ -72,6 +68,8 @@ Then run the Cygwin terminal and paste the following:
 
 To use:
 `imgur imgur.com/a/XXXXX`
+
+Note: Make sure "/usr/local/bin" is stated under `echo $PATH`.
 
 KDE
 ---
@@ -99,8 +97,7 @@ This script can also download entire subreddit's worth of
 albums. [Example1](http://reactiongifsmods.imgur.com/) and
 [Example2](http://imgur.com/r/reactiongifs). 
 
-
-##### Requirements<a id="req"/>
+##### Requirements
 
 The following need to be installed for this script to work:  
 bash, basename, mktemp, curl, (g)awk, sed
