@@ -68,6 +68,7 @@ exit 1
 
 function parse_folder_name()
 {
+  # ;exit is needed since sometimes data-title appears twice
   temp_folder_name="$(awk -F\" '/data-title/ {print $6; exit}' $htmltemp)"
 
   if [[ "$sanitize" == "TRUE" ]]
@@ -169,7 +170,6 @@ do
     # Download the html source to a temp file for quick parsing.
     curl -s "$url" > $htmltemp
     debug '$htmltemp = ' $htmltemp
-    # ;exit is needed since sometimes data-title appears twice
 
     folder_name="$(parse_folder_name)"
 
