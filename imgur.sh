@@ -63,7 +63,6 @@ function systems_check()
 {
   failed="FALSE"
   which bash   > /dev/null || { failed="TRUE" ; echo Bash   not installed. ; }
-  which git    > /dev/null || { failed="TRUE" ; echo Git    not installed. ; }
   which mktemp > /dev/null || { failed="TRUE" ; echo mktemp not installed. ; }
   which curl   > /dev/null || { failed="TRUE" ; echo cURL   not installed. ; }
   which awk    > /dev/null || { failed="TRUE" ; echo awk    not installed. ; }
