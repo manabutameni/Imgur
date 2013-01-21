@@ -105,8 +105,8 @@ function parse_folder_name()
 
   if [[ "$sanitize" == "TRUE" ]]
   then # remove special characters
-    clean=${temp_folder_name//_/} #turn / into _
-    clean=${clean// /_} #turn spaces into _
+    clean=${temp_folder_name//_/}               # turn / into _
+    clean=${clean// /_}                         # turn spaces into _
     temp_folder_name="${clean//[^a-zA-Z0-9_]/}" # remove all special chars
   else
     temp_folder_name=$(sed 's/\//_/g' <<< $temp_folder_name) # ensure no / chars
@@ -119,10 +119,13 @@ function parse_folder_name()
   echo $temp_folder_name
 }
 
-function float_eval()
 {
   # Evaluate a floating point number expression.
-  echo "$(echo "scale=2; $*" | bc -q 2> /dev/null)"
+  # There must be an argument and it must be an integer.
+  # Example: evaluate 3 "4 * 5.2" ; # would set the scale to 3
+  scale=$1
+  shift 1
+  echo "$(echo "scale=$scale; $*" | bc -q 2> /dev/null)"
 }
 
 function progress_bar()
@@ -299,7 +302,9 @@ do
       let count=$count+1;
       if [[ $silent_flag == "FALSE" && $count != 0 ]]
       then # display download progress.
+        percent=$(evaluate 2 "100 * $count / $total_images")
         percent=${percent/.*}
+        prog=$(evaluate 2 "60 * $count / $total_images")
         if [[ $percent =~ ^[0-9]+$ ]]
         then
           progress_bar $percent $prog
@@ -322,8 +327,6 @@ then
   exit 1
 else
   # Cleaning up
-  rm $htmltemp
-  rm $logfile
   time_end=$(date +%s)
   debug $time_end "Completed successfully."
   exit 0
