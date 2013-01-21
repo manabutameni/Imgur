@@ -6,9 +6,9 @@
 
 # Declarations
 htmlname="$(basename $0)"
-logname=$htmlname.log
-htmltemp=$(mktemp -t ${htmlname}.XXXXX) || exit 1
-logfile=$(mktemp -t ${logname}.XXXXX) || exit 1
+logname=$htmlname
+htmltemp=$(mktemp -t ${htmlname}.XXXXX).html || exit 1
+logfile=$(mktemp -t ${logname}.XXXXX).log || exit 1
 
 time_start=$(date +%s)
 time_diff=$(date +%s)
@@ -22,7 +22,7 @@ debug_flag="FALSE"
 curl_args="-s"
 data_index=-1
 count=0
-gallery_url=('') 
+gallery_url=('')
 
 # Functions
 function long_desc()
@@ -58,6 +58,25 @@ function short_desc()
   stdout "usage: $0 [-cps] URL [URL]"
   exit 1
 }
+
+function systems_check()
+{
+  failed="FALSE"
+  which bash   > /dev/null || { failed="TRUE" ; echo Bash   not installed. ; }
+  which git    > /dev/null || { failed="TRUE" ; echo Git    not installed. ; }
+  which mktemp > /dev/null || { failed="TRUE" ; echo mktemp not installed. ; }
+  which curl   > /dev/null || { failed="TRUE" ; echo cURL   not installed. ; }
+  which awk    > /dev/null || { failed="TRUE" ; echo awk    not installed. ; }
+  which sed    > /dev/null || { failed="TRUE" ; echo sed    not installed. ; }
+  if [[ "$failed" == "TRUE" ]]
+  then
+    echo "Could not download album, missing necessary installation(s)."
+    exit 10
+  fi
+  time_diff=$(date +%s)
+  debug $time_diff 'All system requirements met.'
+}
+
 function stdout()
 {
   # Normal output is suppressed when debug flag is raised.
@@ -159,6 +178,7 @@ do
 done
 shift $((OPTIND - 1))
 
+systems_check
 gallery_url=("$@")
 
 if [[ $debug_flag == "TRUE" ]]
