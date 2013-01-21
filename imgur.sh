@@ -60,10 +60,17 @@ exit 0
 
 function short_desc()
 {
-  cat << EOF
-usage: $0 [-cps] URL [URL]
-EOF
-exit 1
+  stdout "usage: $0 [-cps] URL [URL]"
+  exit 1
+}
+function stdout()
+{
+  # Normal output is suppressed when debug flag is raised.
+  if [[ "$debug_flag" == "FALSE" ]] && [[ "$silent_flag" == "FALSE" ]]
+  then
+    echo $*
+  fi
+}
 }
 
 function parse_folder_name()
@@ -189,7 +196,6 @@ do
     debug '$folder_name = ' $folder_name
 
     # Save link to album in a text file with the images.
-    echo "$url" >> "$folder_name"/"permalink.txt"
 
     # Get total number of images to properly display percent done.
     total_images=0
@@ -242,33 +248,23 @@ do
         mv "$folder_name"/"$new_image_name" \
           "$folder_name"/"$(basename $new_image_name .jpg).gif"
       fi
-      
       let count=$count+1;
       if [[ $silent_flag == "FALSE" && $count != 0 ]]
       then # display download progress.
-        percent=$(float_eval "100 * $count / $total_images")
         percent=${percent/.*}
-        prog=$(float_eval "60 * $count / $total_images")
         if [[ $percent =~ ^[0-9]+$ ]]
         then
           progress_bar $percent $prog
         fi
       fi
     done
-    if [[ "$silent_flag" == "FALSE" ]]
-    then # Echo output
-      echo
-      echo "Finished with $count files downloaded."
-    fi
   else
-    echo "Must be an album from imgur.com"
     exit 1
   fi
 done
 
 if [[ -s "$logfile" ]]
 then
-  echo "Exited with errors, check $logfile"
   exit 1
 else
   # Cleaning up
