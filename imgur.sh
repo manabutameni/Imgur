@@ -119,6 +119,7 @@ function parse_folder_name()
   echo $temp_folder_name
 }
 
+function evaluate()
 {
   # Evaluate a floating point number expression.
   # There must be an argument and it must be an integer.
@@ -258,7 +259,6 @@ do
       # Some albums have the thumbnail images out of order in the html source,
       # this fixes that.
       data_index="$(grep $image_url $htmltemp | awk -F\" '{print $12}')"
-      # data_index=$(echo $data_index)
       let data_index=$data_index+1
 
       # Ensure no images are thumbnails.
@@ -299,6 +299,7 @@ do
         mv "$folder_name"/"$new_image_name" \
           "$folder_name"/"$(basename $new_image_name .jpg).gif"
       fi
+
       let count=$count+1;
       if [[ $silent_flag == "FALSE" && $count != 0 ]]
       then # display download progress.
