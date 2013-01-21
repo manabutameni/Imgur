@@ -10,6 +10,9 @@ logname=$htmlname.log
 htmltemp=$(mktemp -t ${htmlname}.XXXXX) || exit 1
 logfile=$(mktemp -t ${logname}.XXXXX) || exit 1
 
+time_start=$(date +%s)
+time_diff=$(date +%s)
+time_end=$(date +%s)
 folderexists="TRUE"
 multiple_urls="FALSE"
 sanitize="FALSE"
@@ -22,14 +25,6 @@ count=0
 gallery_url=('') 
 
 # Functions
-function debug()
-{
-  if [[ "$debug_flag" == "TRUE" ]] && [[ "$silent_flag" == "FALSE" ]]
-  then
-    echo DEBUG: $*
-  fi
-}
-
 function long_desc()
 {
   cat << EOF
@@ -71,6 +66,17 @@ function stdout()
     echo $*
   fi
 }
+
+function debug()
+{
+  # Debug output is suppressed when silent flag is raised.
+  if [[ "$debug_flag" == "TRUE" ]] && [[ "$silent_flag" == "FALSE" ]]
+  then
+    real_diff=$(echo "$1 - $time_start" | bc)
+    shift 1 # Otherwise we would print out a string of useless numbers.
+    printf "[$real_diff] DEBUG: $*"
+    echo 
+  fi
 }
 
 function parse_folder_name()
@@ -102,47 +108,51 @@ function float_eval()
 
 function progress_bar()
 {
-  printf "[%60s]       \r" " " # clear each time in case of accidental input.
-  printf "[%60s] $1\045\r" " " # Print off the percent completed passed to $1
-  printf "[%${2}s>\r" " " | tr ' ' '=' # Print progress bar as '=>'
-  if [[ $2 == "60.00" ]]
-  then #Display completed progress bar.
-    printf "[%${2}s]\r" " " | tr ' ' '='
+  if [[ "$debug_flag" == "FALSE" ]]
+  then
+    printf "[%60s]       \r" " " # clear each time in case of accidental input.
+    printf "[%60s] $1\045\r" " " # Print off the percent completed passed to $1
+    printf "[%${2}s>\r" " " | tr ' ' '=' # Print progress bar as '=>'
+    if [[ $2 == "60.00" ]]
+    then # Display completed progress bar.
+      printf "[%${2}s]\r" " " | tr ' ' '='
+    fi
   fi
 }
 
 # Option Parsing
-while getopts ":dhcps" OPTION
+while getopts ":hdcps" OPTION
 do
   case $OPTION in
-    d)
-      # print debugging messages
-      debug_flag="TRUE"
-      ;;
     h)
       long_desc
+      ;;
+    d)
+      # print debugging messages
+      time_diff=$(date +%s)
+      debug_flag="TRUE" && debug $time_diff "Debug Flag Raised"
       ;;
     c)
       # Clean non alpha-numeric characters from album name.
       # Useful for the (rare) albums named !!!$)(@@*$@$%@
-      debug Clean Flag Set
-      sanitize="TRUE"
+      time_diff=$(date +%s)
+      sanitize="TRUE" && debug $time_diff "Clean Flag Raised" 
       ;;
     p)
       # Preserve Imgur's naming scheme. Please note that this will not keep the
       # order of the images. While this does break the spirit of the script it
       # is included here for the sake of completion.
-      debug Preserve Flag Set
-      preserve="TRUE"
+      time_diff=$(date +%s)
+      preserve="TRUE" && debug $time_diff "Preserve Flag Raised" 
       ;;
     s)
       # Run silently.
-      debug Silent Flag Set
       curl_args="-s"
-      silent_flag="TRUE"
+      time_diff=$(date +%s)
+      silent_flag="TRUE" && debug $time_diff "Silent Flag Raised" 
       ;;
     '?' | *)
-      echo "Invalid option: -$OPTARG" >&2
+      stdout "Invalid option: -$OPTARG" >&2
       short_desc
       ;;
   esac
@@ -155,14 +165,16 @@ if [[ $debug_flag == "TRUE" ]]
 then
   for (( i = 0 ; i < ${#@} ; i++ ))
   do
-    debug gallery_url[$i] '=' ${gallery_url[$i]}
+    time_diff=$(date +%s)
+    debug $time_diff "gallery_url[$i] '=' ${gallery_url[$i]}" 
   done
 fi
 
 # make sure gallery_url isn't empty.
 if [[ -z ${gallery_url[0]} ]]
 then
-  debug '$gallery_url[0] is empty'
+  time_diff=$(date +%s)
+  debug $time_diff '$gallery_url[0] is empty'
   short_desc
   exit 1
 fi
@@ -170,13 +182,22 @@ fi
 # Program Begins
 for url in ${gallery_url[@]}
 do
-  debug '$url = ' $url
+  if [[ "$url" =~ 'all#' ]]
+  then # remove erroneous text from end of URL for proper parsing.
+    index=$(awk -v a="$url" -v b="all#" 'BEGIN{print index(a,b)}')
+    let index=$index-2
+    url=${url:0:$index}
+  fi
+  time_diff=$(date +%s)
+  debug $time_diff '$url = ' $url
   count=0 # Reset counter
   if [[ "$url" =~ "imgur.com/a/" ]]
   then
     # Download the html source to a temp file for quick parsing.
     curl -s "$url" > $htmltemp
-    debug '$htmltemp = ' $htmltemp
+    time_diff=$(date +%s)
+    debug $time_diff '$htmltemp = ' $htmltemp
+    debug $time_diff '$logfile = ' $logfile
 
     folder_name="$(parse_folder_name)"
 
@@ -185,7 +206,7 @@ do
     # if the script is used twice on the same album in the same folder.
     test -d "$folder_name" || folderexists="FALSE"
 
-    if [[ "$folderexists" == "TRUE" ]] 
+    if [[ "$folderexists" == "TRUE" ]]
     then
       tempdir=$(mktemp -d "$folder_name"_XXXXX) || exit 1
       folder_name="$tempdir"
@@ -193,9 +214,11 @@ do
       mkdir -p "$folder_name"
     fi
 
-    debug '$folder_name = ' $folder_name
+    time_diff=$(date +%s)
+    debug $time_diff '$folder_name = ' $folder_name
 
     # Save link to album in a text file with the images.
+    stdout "$url" >> "$folder_name"/"permalink.txt"
 
     # Get total number of images to properly display percent done.
     total_images=0
@@ -203,7 +226,8 @@ do
     do
       let total_images=$total_images+1
     done
-    debug '$total_images = ' $total_images
+    time_diff=$(date +%s)
+    debug $time_diff '$total_images = ' $total_images
 
     # Iterate over all images found.
     for image_url in $(awk -F\" '/data-src/ {print $10}' $htmltemp | sed '/^$/d')
@@ -218,6 +242,8 @@ do
       # Always works because all images that could be in $image_url are currently
       # thumbnails.
       image_url=$(sed 's/s.jpg/.jpg/g' <<< "$image_url")
+      time_diff=$(date +%s)
+      debug $time_diff "image_url dethumbnailed: $image_url"
 
       if [[ "$preserve" == "TRUE" ]]
       then # Preserve imgur naming conventions.
@@ -226,6 +252,8 @@ do
         image_name=$data_index.jpg
       fi
 
+      time_diff=$(date +%s)
+      debug $time_diff "Downloading image: $(($count+1))"
       # This is where the file is actually downloaded
       curl $curl_args $image_url > "$folder_name"/$image_name ||
         printf "failed to download: $image_url \n" >> $logfile
@@ -256,19 +284,27 @@ do
         then
           progress_bar $percent $prog
         fi
+        time_end=$(date +%s)
+        debug $time_end "Progress: $percent%%"
       fi
     done
+      stdout ""
+      stdout "Finished with $count files downloaded."
   else
+    stdout "Must be an album from imgur.com"
     exit 1
   fi
 done
 
 if [[ -s "$logfile" ]]
 then
+  stdout "Exited with errors, check $logfile"
   exit 1
 else
   # Cleaning up
   rm $htmltemp
   rm $logfile
+  time_end=$(date +%s)
+  debug $time_end "Completed successfully."
   exit 0
 fi
