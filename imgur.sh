@@ -241,7 +241,9 @@ do
     debug $time_diff '$folder_name = ' $folder_name
 
     # Save link to album in a text file with the images.
-    stdout "$url" >> "$folder_name"/"permalink.txt"
+    echo "$url" >> "$folder_name"/"permalink.txt"
+    time_diff=$(date +%s)
+    debug $time_diff 'permalink: ' "$folder_name"/"permalink.txt"
 
     # Get total number of images to properly display percent done.
     total_images=0
