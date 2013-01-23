@@ -260,7 +260,10 @@ do
       # Some albums have the thumbnail images out of order in the html source,
       # this fixes that.
       data_index="$(grep $image_url $htmltemp | awk -F\" '{print $12}')"
-      let data_index=$data_index+1
+      let "data_index = $data_index + 1"
+      data_index=$(echo $data_index) # necessary to remove preceding newline.
+      time_diff=$(date +%s)
+      debug $time_diff "data_index: $data_index"
 
       # Ensure no images are thumbnails.
       # Always works because all images that could be in $image_url are currently
@@ -277,9 +280,9 @@ do
       fi
 
       time_diff=$(date +%s)
-      debug $time_diff "Downloading image: $(($count+1))"
+      debug $time_diff "Downloading image: $(($count+1))" '$count+1'
       # This is where the file is actually downloaded
-      curl $curl_args $image_url > "$folder_name"/$image_name ||
+      curl $curl_args $image_url > "$folder_name"/"$image_name" ||
         printf "failed to download: $image_url \n" >> $logfile
 
       if [[ "$preserve" == "TRUE" ]]
@@ -295,7 +298,7 @@ do
       # Read the first three bytes of the file and see if they contain "GIF"
       # Currently unsure if this will work 100% of the time, but it was the
       # best solution I knew of without forcing people to download imagemagick.
-      if [[ $(head -c 3 "$folder_name"/"$new_image_name") == "GIF" ]]
+      if [[ $(file --brief --mime "$folder_name"/"$new_image_name" | awk -F\; '{print $1}') == "image/gif" ]]
       then # rename the image with the proper extension.
         mv "$folder_name"/"$new_image_name" \
           "$folder_name"/"$(basename $new_image_name .jpg).gif"
