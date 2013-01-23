@@ -296,9 +296,7 @@ do
         debug "$time_diff" "Preserved Image Name: $new_image_name"
       fi
 
-      # Read the first three bytes of the file and see if they contain "GIF"
-      # Currently unsure if this will work 100% of the time, but it was the
-      # best solution I knew of without forcing people to download imagemagick.
+      # Read the mimetype to ensure proper image renaming.
       if [[ "$(file --brief --mime "$folder_name"/"$new_image_name" | awk -F\; '{print $1}')" == "image/gif" ]]
       then # rename the image with the proper extension.
         mv "$folder_name"/"$new_image_name" \
