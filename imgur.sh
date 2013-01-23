@@ -289,7 +289,6 @@ do
         # This is needed so the next if statement can always get the right file.
         new_image_name="$image_name"
       else
-        new_image_name="$(printf %05d.%s ${image_name%.*} ${image_name##*.})"
         # brief expl:     force 5 digits   basename         extension
         new_image_name="$(printf %05d.%s ${image_name%.*} ${image_name##*.})"
         mv "$folder_name"/"$image_name" "$folder_name"/"$new_image_name"
