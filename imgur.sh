@@ -8,6 +8,7 @@
 htmlname="$(basename $0)"
 logname="$htmlname"
 htmltemp="$(mktemp -t ${htmlname}.XXXXX).html" || exit 1
+rawtemp="$(mktemp -t ${htmlname}.XXXXX).raw" || exit 1
 logfile="$(mktemp -t ${logname}.XXXXX).log" || exit 1
 
 time_start="$(date +%s)"
@@ -217,9 +218,11 @@ do
   then
     # Download the html source to a temp file for quick parsing.
     curl -s "$url" > "$htmltemp"
+
     time_diff="$(date +%s)" 
-    debug "$time_diff" '$htmltemp = ' "$htmltemp"
-    debug "$time_diff" '$logfile = '  "$logfile"
+    debug "$time_diff" 'html temp = ' "$htmltemp"
+    debug "$time_diff" 'log file  = ' "$logfile"
+    debug "$time_diff" 'raw temp  = ' "$rawtemp"
 
     folder_name="$(parse_folder_name)"
 
@@ -238,6 +241,15 @@ do
 
     time_diff="$(date +%s)"
     debug "$time_diff" 'folder name = '"$folder_name" 
+
+    # Parse image descriptions. Note: already in order. Descriptions separated by newlines.
+    grep -i "images[[:space:]]*:" "$htmltemp" > "$rawtemp"
+    # Find the list of descriptions at the end of the html source, cut it out and save it, replacing html-source with equivalent ascii.
+    grep '"count":' "$htmltemp" | awk '{gsub(/\,/,"\n,");print}' | sed "s,&#039;,\',g" > "$rawtemp"
+    # From that file, parse a list of descriptions, and apply some custom formatting.
+    sed -n '/description/,/width/p' "$rawtemp" | sed '/,"width":/d' | tr -d '\n' > "$rawtemp.0"
+    # From THAT file, apple some more formatting, send file to download folder.
+    awk '{gsub(/\,"description":"/,"\n\n");print}' "$rawtemp.0" |  sed -e 's/<[^>]*>//g' | sed 's/\\\//\//g' > "$folder_name"/descriptions.txt
 
     # Save link to album in a text file with the images.
     echo "$url" >> "$folder_name"/"permalink.txt"
