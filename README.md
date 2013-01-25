@@ -1,4 +1,4 @@
-#####About
+###About
 
 This is a 100% Bash script used to download imgur albums while making sure that
 the order of the pictures is retained.
@@ -9,7 +9,7 @@ Author:
     manabutameni  
     https://github.com/manabutameni/Imgur
 
-#####Usage
+###Usage
 
     bash imgur.sh [-dcps] URL [URL]
 
@@ -22,7 +22,7 @@ Author:
 
 Multiple albums can be downloaded like so: `bash imgur.sh URL1 URL2 ...`
 
-#####Installation
+###Installation
 
 Ensure you have the required software. See [Requirements](#requirements).
 
@@ -30,7 +30,7 @@ This is only necessary if you want to run the script without having it in the
 same folder you want the imgur album, or if you want to install imgur.desktop
 for KDE.
 
-###### Nix like operating systems
+#### Nix like operating systems
 
     sudo mkdir -p /usr/local/bin 
     sudo chown `whoami` /usr/local/bin
@@ -44,7 +44,7 @@ Do note that you will need to append the last two lines to your ~/.bashrc
 To use:  
 In any directory type: `imgur imgur.com/a/XXXXX`  
 
-###### Windows under cygwin
+#### Windows under cygwin
 
 [Cygwin website](http://cygwin.com/install.html)  
 Using setup.exe install the following:
@@ -66,7 +66,7 @@ To use:
 
 Note: Make sure "/usr/local/bin" is stated under `echo $PATH`.
 
-######KDE
+####KDE
 
 There is a file named imgur.desktop with you in mind. Simply copy imgur.desktop
 to your local `kde4-config --path services` folder location and make sure it's
@@ -79,19 +79,19 @@ DL".
 Please note, this will only work if you have installed the script in the
 Installation part of this readme.
 
-#####Extra
+###Extra
 
 I wanted to write a script that would ensure that each image is in the proper
 order which you can't do by clicking the "Download" button on imgur albums.
 Clicking the "Download" link on imgur albums does not save the order.
 [Example album](http://imgur.com/a/NhmjT/all#0)
 
-###### Requirements
+#### Requirements
 
 The following need to be installed for this script to work:  
 bash, basename, mktemp, curl, (g)awk, sed
 
-###### What this script does not do
+#### What this script does not do
 
 This script will not update an album. For example, if there's an album that is
 frequently updated that you enjoy following, this script (by design) cannot and
