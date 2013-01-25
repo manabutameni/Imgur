@@ -93,8 +93,7 @@ function debug()
   then
     real_diff="$(echo "$1 - $time_start" | bc)"
     shift 1 # Otherwise we would print out a string of useless numbers.
-    printf "[$real_diff] DEBUG: $@"
-    echo 
+    echo "[$real_diff] DEBUG: $@"
   fi
 }
 
@@ -213,6 +212,7 @@ do
   fi
   time_diff="$(date +%s)"
   debug "$time_diff" '$url = ' "$url"
+  echo $url
   count=0 # Reset counter
   if [[ "$url" =~ "imgur.com/a/" ]]
   then
