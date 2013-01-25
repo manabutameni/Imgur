@@ -62,11 +62,11 @@ function short_desc()
 function systems_check()
 {
   failed="FALSE"
-  which bash   > /dev/null || { failed="TRUE" ; echo Bash   not installed. ; }
-  which mktemp > /dev/null || { failed="TRUE" ; echo mktemp not installed. ; }
-  which curl   > /dev/null || { failed="TRUE" ; echo cURL   not installed. ; }
-  which awk    > /dev/null || { failed="TRUE" ; echo awk    not installed. ; }
-  which sed    > /dev/null || { failed="TRUE" ; echo sed    not installed. ; }
+  command -v bash   > /dev/null || { failed="TRUE" ; echo Bash   not installed. ; }
+  command -v mktemp > /dev/null || { failed="TRUE" ; echo mktemp not installed. ; }
+  command -v curl   > /dev/null || { failed="TRUE" ; echo cURL   not installed. ; }
+  command -v awk    > /dev/null || { failed="TRUE" ; echo awk    not installed. ; }
+  command -v sed    > /dev/null || { failed="TRUE" ; echo sed    not installed. ; }
   if [[ "$failed" == "TRUE" ]]
   then
     echo "Could not download album, missing necessary installation(s)."
@@ -81,7 +81,7 @@ function stdout()
   # Normal output is suppressed when debug flag is raised.
   if [[ "$debug_flag" == "FALSE" ]] && [[ "$silent_flag" == "FALSE" ]]
   then
-    echo "$*"
+    echo "$@"
   fi
 }
 
@@ -92,7 +92,7 @@ function debug()
   then
     real_diff="$(echo "$1 - $time_start" | bc)"
     shift 1 # Otherwise we would print out a string of useless numbers.
-    printf "[$real_diff] DEBUG: $*"
+    printf "[$real_diff] DEBUG: $@"
     echo 
   fi
 }
@@ -125,7 +125,7 @@ function evaluate()
   # Example: evaluate 3 "4 * 5.2" ; # would set the scale to 3
   scale="$1"
   shift 1
-  echo "$(echo "scale=$scale; $*" | bc -q 2> /dev/null)"
+  echo "$(echo "scale=$scale; $@" | bc -q 2> /dev/null)"
 }
 
 function progress_bar()
