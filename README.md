@@ -1,5 +1,4 @@
-About
------
+#About
 
 This is a 100% Bash script used to download imgur albums while making sure that
 the order of the pictures is retained.
@@ -10,25 +9,20 @@ Author:
     manabutameni  
     https://github.com/manabutameni/Imgur
 
-Usage
------
-
-The script was created so that all that you need to do is copy+paste the address
-bar link into the terminal.
+#Usage
 
     bash imgur.sh [-dcps] URL [URL]
 
     OPTIONS
-        -h        Show this message.
-        -c        Clean nonalphanumeric characters from the album's name.
-        -p        Preserve imgur's naming. (Warning! This will not retain order.)
-        -s        Silent mode. Overrides debug mode.
-        -d        Debug mode.
+        -h       Show this message.
+        -c       Clean nonalphanumeric characters from the album's name.
+        -p       Preserve imgur's naming. (Warning! This will not retain order.)
+        -s       Silent mode. Overrides debug mode.
+        -d       Debug mode. Overrides starndard output.
 
-Multiple albums can be downloaded like so: `bash imgur.sh URL1 URL2...`
+Multiple albums can be downloaded like so: `bash imgur.sh URL1 URL2 ...`
 
-Installation
-------------
+#Installation
 
 Ensure you have the required software. See [Requirements](#requirements).
 
@@ -36,7 +30,7 @@ This is only necessary if you want to run the script without having it in the
 same folder you want the imgur album, or if you want to install imgur.desktop
 for KDE.
 
-### Nix like operating systems
+## Nix like operating systems
 
     sudo mkdir -p /usr/local/bin 
     sudo chown `whoami` /usr/local/bin
@@ -45,10 +39,12 @@ for KDE.
     chmod +x imgur
     PATH=$PATH:/usr/local/bin
     export PATH
-
 Do note that you will need to append the last two lines to your ~/.bashrc
 
-### Windows under cygwin
+To use:  
+In any directory type: `imgur imgur.com/a/XXXXX`  
+
+## Windows under cygwin
 
 [Cygwin website](http://cygwin.com/install.html)  
 Using setup.exe install the following:
@@ -70,12 +66,11 @@ To use:
 
 Note: Make sure "/usr/local/bin" is stated under `echo $PATH`.
 
-KDE
----
+#KDE
 
-There is a file named imgur.desktop with you in mind. Simply copy to your local
-`kde4-config --path services` location and make sure it's executable. `chmod +x
-imgur.desktop`.
+There is a file named imgur.desktop with you in mind. Simply copy imgur.desktop
+to your local `kde4-config --path services` folder location and make sure it's
+executable. `chmod +x imgur.desktop`.
 
 To use: Simply copy the url of an imgur album into your clipboard and right
 click on an empty area in dolphin. Under actions you should see "Imgur Album
@@ -84,34 +79,21 @@ DL".
 Please note, this will only work if you have installed the script in the
 Installation part of this readme.
 
-Extra
------
+#Extra
 
 I wanted to write a script that would ensure that each image is in the proper
 order which you can't do by clicking the "Download" button on imgur albums.
 Clicking the "Download" link on imgur albums does not save the order.
 [Example album](http://imgur.com/a/NhmjT/all#0)
 
-This script can also download entire subreddit's worth of
-albums. [Example1](http://reactiongifsmods.imgur.com/) and
-[Example2](http://imgur.com/r/reactiongifs). 
-
-##### Requirements
+## Requirements
 
 The following need to be installed for this script to work:  
 bash, basename, mktemp, curl, (g)awk, sed
 
-##### What this script does not do: 
+## What this script does not do
 
 This script will not update an album. For example, if there's an album that is
 frequently updated that you enjoy following, this script (by design) cannot and
 will not update that album with the newest images. Just imagine if you tried
 downloading an album that was titled "Pictures".
-
-##### Credits
-
-Thanks to everyone in this thread who helped me out.  
-http://redd.it/webn1  
-Special Thanks goes to Reddit users:  
-  /u/Ihasn and /u/Skaarj for help on the base code during the early stages.  
-  /u/invisiblescars for the idea and original code for a kde4 context menu.
