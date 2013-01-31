@@ -70,8 +70,7 @@ function systems_check()
   command -v sed    > /dev/null || { failed="TRUE" ; echo sed    not installed. ; }
   if [[ "$failed" == "TRUE" ]]
   then
-    echo "Could not download album, missing necessary installation(s)."
-    exit 10
+    exit 127
   fi
   time_diff="$(date +%s)"
   debug "$time_diff" 'All system requirements met.'
