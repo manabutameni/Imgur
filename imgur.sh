@@ -12,8 +12,6 @@ rawtemp="$(mktemp -t ${htmlname}.XXXXX).raw" || exit 1
 logfile="$(mktemp -t ${logname}.XXXXX).log" || exit 1
 
 time_start="$(date +%s)"
-time_diff="$(date +%s)"
-time_end="$(date +%s)"
 folderexists="TRUE"
 multiple_urls="FALSE"
 sanitize="FALSE"
@@ -72,8 +70,7 @@ function systems_check()
   then
     exit 127
   fi
-  time_diff="$(date +%s)"
-  debug "$time_diff" 'All system requirements met.'
+  debug 'All system requirements met.'
 }
 
 function stdout()
@@ -90,9 +87,7 @@ function debug()
   # Debug output is suppressed when silent flag is raised.
   if [[ "$debug_flag" == "TRUE" ]] && [[ "$silent_flag" == "FALSE" ]]
   then
-    real_diff="$(echo "$1 - $time_start" | bc)"
-    shift 1 # Otherwise we would print out a string of useless numbers.
-    echo "[$real_diff] DEBUG: $@"
+    echo "[$(echo "$(date +%s) - $time_start" | bc)] DEBUG: $@"
   fi
 }
 
@@ -150,26 +145,22 @@ do
       ;;
     d)
       # print debugging messages
-      time_diff="$(date +%s)"
-      debug_flag="TRUE" && debug "$time_diff" "Debug Flag Raised"
+      debug_flag="TRUE" && debug "Debug Flag Raised"
       ;;
     c)
       # Clean non alpha-numeric characters from album name.
-      time_diff="$(date +%s)"
-      sanitize="TRUE" && debug "$time_diff" "Clean Flag Raised" 
+      sanitize="TRUE" && debug "Clean Flag Raised" 
       ;;
     p)
       # Preserve Imgur's naming scheme. Please note that this will not keep the
       # order of the images. While this does break the spirit of the script it
       # is included here for the sake of completion.
-      time_diff="$(date +%s)" 
-      preserve="TRUE" && debug "$time_diff" "Preserve Flag Raised" 
+      preserve="TRUE" && debug "Preserve Flag Raised" 
       ;;
     s)
       # Run silently.
       curl_args="-s"
-      time_diff="$(date +%s)" 
-      silent_flag="TRUE" && debug "$time_diff" "Silent Flag Raised" 
+      silent_flag="TRUE" && debug "Silent Flag Raised" 
       ;;
     '?' | *)
       stdout "Invalid option: -$OPTARG" >&2
@@ -186,16 +177,14 @@ if [[ "$debug_flag" == "TRUE" ]]
 then
   for (( i = 0 ; i < "${#@}" ; i++ ))
   do
-    time_diff="$(date +%s)" 
-    debug "$time_diff" "gallery_url[$i] '=' ${gallery_url[$i]}" 
+    debug "gallery_url[$i] = ${gallery_url[$i]}" 
   done
 fi
 
 # make sure gallery_url isn't empty.
 if [[ -z "${gallery_url[0]}" ]]
 then
-  time_diff="$(date +%s)" 
-  debug "$time_diff" '$gallery_url[0] is empty'
+  debug '$gallery_url[0] is empty'
   short_desc
   exit 1
 fi
@@ -209,19 +198,16 @@ do
     let "index = $index - 2"
     url="${url:0:$index}"
   fi
-  time_diff="$(date +%s)"
-  debug "$time_diff" '$url = ' "$url"
-  echo $url
+  debug 'url = ' "$url"
   count=0 # Reset counter
   if [[ "$url" =~ "imgur.com/a/" ]]
   then
     # Download the html source to a temp file for quick parsing.
     curl -s "$url" > "$htmltemp"
 
-    time_diff="$(date +%s)" 
-    debug "$time_diff" 'html temp = ' "$htmltemp"
-    debug "$time_diff" 'log file  = ' "$logfile"
-    debug "$time_diff" 'raw temp  = ' "$rawtemp"
+    debug 'html temp = ' "$htmltemp"
+    debug 'log file  = ' "$logfile"
+    debug 'raw temp  = ' "$rawtemp"
 
     folder_name="$(parse_folder_name)"
 
@@ -238,8 +224,7 @@ do
       mkdir -p "$folder_name"
     fi
 
-    time_diff="$(date +%s)"
-    debug "$time_diff" 'folder name = '"$folder_name" 
+    debug 'folder name = '"$folder_name" 
 
     # Parse image descriptions. Note: already in order. Descriptions separated by newlines.
     grep -i "images[[:space:]]*:" "$htmltemp" > "$rawtemp"
@@ -252,8 +237,7 @@ do
 
     # Save link to album in a text file with the images.
     echo "$url" >> "$folder_name"/"permalink.txt"
-    time_diff="$(date +%s)"
-    debug "$time_diff" 'permalink: ' "$folder_name"/"permalink.txt"
+    debug 'permalink: ' "$folder_name"/"permalink.txt"
 
     # Get total number of images to properly display percent done.
     total_images=0
@@ -261,8 +245,7 @@ do
     do
       let "total_images = $total_images + 1"
     done
-    time_diff="$(date +%s)"
-    debug "$time_diff" '$total_images = ' "$total_images"
+    debug '$total_images = ' "$total_images"
 
     # Iterate over all images found.
     for image_url in $(awk -F\" '/data-src/ {print $10}' "$htmltemp" | sed '/^$/d')
@@ -272,15 +255,13 @@ do
       data_index="$(grep $image_url $htmltemp | awk -F\" '{print $12}')"
       let "data_index = $data_index + 1"
       data_index="$(echo $data_index)" # necessary to remove preceding newline.
-      time_diff="$(date +%s)"
-      debug "$time_diff" "data_index: $data_index"
+      debug "data_index: $data_index"
 
       # Ensure no images are thumbnails.
       # Always works because all images that could be in $image_url are currently
       # thumbnails.
       image_url=$(sed 's/s.jpg/.jpg/g' <<< "$image_url")
-      time_diff="$(date +%s)"
-      debug "$time_diff" "image_url dethumbnailed: $image_url"
+      debug "image_url dethumbnailed: $image_url"
 
       if [[ "$preserve" == "TRUE" ]]
       then # Preserve imgur naming conventions.
@@ -289,8 +270,7 @@ do
         image_name="$data_index.jpg"
       fi
 
-      time_diff="$(date +%s)"
-      debug "$time_diff" "Downloading image: $(($count+1))" '$count+1'
+      debug "Downloading image: $(($count+1))" '$count+1'
       # This is where the file is actually downloaded
       curl "$curl_args" "$image_url" > "$folder_name"/"$image_name" ||
         printf "failed to download: $image_url \n" >> "$logfile"
@@ -303,8 +283,7 @@ do
         # brief expl:     force 5 digits   basename         extension
         new_image_name="$(printf %05d.%s ${image_name%.*} ${image_name##*.})"
         mv "$folder_name"/"$image_name" "$folder_name"/"$new_image_name"
-        time_diff="$(date +%s)"
-        debug "$time_diff" "Preserved Image Name: $new_image_name"
+        debug "Preserved Image Name: $new_image_name"
       fi
 
       # Read the mimetype to ensure proper image renaming.
@@ -314,8 +293,7 @@ do
           "$folder_name"/"$(basename $new_image_name .jpg).gif"
       fi
 
-      time_diff="$(date +%s)"
-      debug "$time_diff" "Image Name: $new_image_name"
+      debug "Image Name: $new_image_name"
 
       let "count = $count + 1"
       if [[ "$silent_flag" == "FALSE" && "$count" != 0 ]]
@@ -327,8 +305,7 @@ do
         then
           progress_bar "$percent" "$prog"
         fi
-        time_diff=$(date +%s)
-        debug "$time_diff" "Progress: $percent%%"
+        debug "Progress: $percent%%"
       fi
     done
       stdout ""
@@ -345,7 +322,6 @@ then
   exit 1
 else
   # Cleaning up
-  time_end="$(date +%s)"
-  debug "$time_end" "Completed successfully."
+  debug "Completed successfully."
   exit 0
 fi
