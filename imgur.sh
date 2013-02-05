@@ -8,8 +8,8 @@
 htmlname="$(basename $0)"
 logname="$htmlname"
 htmltemp="$(mktemp -t ${htmlname}.XXXXX).html" || exit 1
-rawtemp="$(mktemp -t ${htmlname}.XXXXX).raw" || exit 1
-logfile="$(mktemp -t ${logname}.XXXXX).log" || exit 1
+rawtemp="$(mktemp -t ${htmlname}.XXXXX).raw"   || exit 1
+logfile="$(mktemp -t ${logname}.XXXXX).log"    || exit 1
 
 time_start="$(date +%s)"
 folderexists="TRUE"
@@ -44,6 +44,11 @@ EXAMPLES
     bash imgur.bash http://imgur.com/a/fG58m#0
     bash imgur.bash reactiongifsarchive.imgur.com
 
+ERROR CODES
+    1: General failure.
+    6: Could not resolve host (cURL failure).
+  127: Command not found.
+
 AUTHOR
     manabutameni
     https://github.com/manabutameni/Imgur
@@ -61,11 +66,11 @@ function short_desc()
 function systems_check()
 {
   failed="FALSE"
-  command -v bash   > /dev/null || { failed="TRUE" ; echo Bash   not installed. ; }
-  command -v mktemp > /dev/null || { failed="TRUE" ; echo mktemp not installed. ; }
-  command -v curl   > /dev/null || { failed="TRUE" ; echo cURL   not installed. ; }
-  command -v awk    > /dev/null || { failed="TRUE" ; echo awk    not installed. ; }
-  command -v sed    > /dev/null || { failed="TRUE" ; echo sed    not installed. ; }
+  command -v bash   > /dev/null || { failed="TRUE"; echo Bash   not installed.; }
+  command -v mktemp > /dev/null || { failed="TRUE"; echo mktemp not installed.; }
+  command -v curl   > /dev/null || { failed="TRUE"; echo cURL   not installed.; }
+  command -v awk    > /dev/null || { failed="TRUE"; echo awk    not installed.; }
+  command -v sed    > /dev/null || { failed="TRUE"; echo sed    not installed.; }
   if [[ "$failed" == "TRUE" ]]
   then
     exit 127
@@ -87,7 +92,7 @@ function debug()
   # Debug output is suppressed when silent flag is raised.
   if [[ "$debug_flag" == "TRUE" ]] && [[ "$silent_flag" == "FALSE" ]]
   then
-    echo "[$(echo "$(date +%s) - $time_start" | bc)] DEBUG: $@"
+    echo "[$(echo "$(date +%s) - $time_start" | bc)] DEBUG: $@" 1>&2
   fi
 }
 
@@ -95,20 +100,22 @@ function parse_folder_name()
 {
   # ;exit is needed since sometimes data-title appears twice
   temp_folder_name="$(awk -F\" '/data-title/ {print $6; exit}' $htmltemp)"
+  temp_folder_name=$(sed "s/&#039;/'/g" <<< "$temp_folder_name")
 
   if [[ "$sanitize" == "TRUE" ]]
   then # remove special characters
-    clean="${temp_folder_name//_/}"               # turn / into _
-    clean="${clean// /_}"                         # turn spaces into _
+    clean="${temp_folder_name//_/}"              # turn / into _
+    clean="${clean// /_}"                        # turn spaces into _
     temp_folder_name="${clean//[^a-zA-Z0-9_]/}" # remove all special chars
   else
-    temp_folder_name="$(sed 's/\//_/g' <<< $temp_folder_name)" # ensure no / chars
+    temp_folder_name="$(sed 's/\//_/g' <<< $temp_folder_name)" # ensure no /
   fi
 
   if [[ "$preserve" == "TRUE" ]] || [ -z "$temp_folder_name" ]
   then # Create a name for a folder name based on the URL.
     temp_folder_name="$(basename "$url" | sed 's/\#.*//g')"
   fi
+  
   echo "$temp_folder_name"
 }
 
@@ -272,6 +279,8 @@ do
 
       debug "Downloading image: $(($count+1))" '$count+1'
       # This is where the file is actually downloaded
+      # If a download fail we are going to give a best effort and place links to
+      # images that were not downloaded properly into $logfile.
       curl "$curl_args" "$image_url" > "$folder_name"/"$image_name" ||
         printf "failed to download: $image_url \n" >> "$logfile"
 
@@ -308,8 +317,8 @@ do
         debug "Progress: $percent%%"
       fi
     done
-      stdout ""
-      stdout "Finished with $count files downloaded."
+    stdout ""
+    stdout "Finished with $count files downloaded."
   else
     stdout "Must be an album from imgur.com"
     exit 1
