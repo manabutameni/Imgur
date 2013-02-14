@@ -52,6 +52,7 @@ Using setup.exe install the following:
 * gawk
 * bash
 * grep
+* sort
 
 Then run the Cygwin terminal and paste the following:
 
@@ -88,7 +89,7 @@ Clicking the "Download" link on imgur albums does not save the order.
 ##### Requirements
 
 The following need to be installed for this script to work:  
-bash, basename, mktemp, curl, (g)awk, sed
+bash, basename, mktemp, curl, (g)awk, sed, sort
 
 ##### What this script does not do
 

@@ -189,6 +189,7 @@ function systems_check()
   command -v curl   > /dev/null || { failed="TRUE"; echo cURL   not installed.; }
   command -v awk    > /dev/null || { failed="TRUE"; echo awk    not installed.; }
   command -v sed    > /dev/null || { failed="TRUE"; echo sed    not installed.; }
+  command -v sort   > /dev/null || { failed="TRUE"; echo sort   not installed.; }
   if [[ "$failed" == "TRUE" ]]
   then
     exit 127
