@@ -1,28 +1,148 @@
 #!/bin/bash
-# Requirements: bash, basename, mktemp, curl, (g)awk, sed
-
-# htmltemp holds .html file for quick, multiple searches
-# logfile holds failed cURL downloads
+# Requirements: bash, mktemp, basename, curl, (g)awk, sed, sort
 
 # Declarations
 htmlname="$(basename $0)"
 logname="$htmlname"
 htmltemp="$(mktemp -t ${htmlname}.XXXXX).html" || exit 1
-logfile="$(mktemp -t ${logname}.XXXXX).log"    || exit 1
-
 time_start="$(date +%s)"
-folderexists="TRUE"
-multiple_urls="FALSE"
-preserve="FALSE"
+preserve_flag="FALSE"
 silent_flag="FALSE"
 debug_flag="FALSE"
-curl_args="-s"
-data_index=-1
-count=0
-main_url=('')
-album_urls=('')
 
-# Functions
+function main()
+{
+  debug "Passed arguments to main: $@"
+  debug "html temp = $htmltemp"
+
+  album_urls=(`parse_album_urls "$@"`)
+  debug "Full album_urls list: ${album_urls[@]}"
+  album_urls=(`remove_duplicate_array_elements "${album_urls[@]}"`)
+  debug "Truncated album_urls: ${album_urls[@]}"
+
+  # make sure album_urls isn't empty.
+  if [[ -z "${album_urls[0]}" ]]
+  then
+    debug "album_urls[0] is empty" 
+    short_desc
+    exit 1
+  fi
+
+  # Program Begins
+  for url in "${album_urls[@]}"
+  do
+    url="imgur.com/a/$url"
+    debug "url = $url"
+    count=0 # Reset counter
+
+    # Download the html source to a temp file for quick parsing.
+    curl -s "$url" > "$htmltemp"
+
+    folder_name="$(parse_folder_name)"
+
+    # It only takes one album named Pictures to possibly screw up
+    # an entire folder. This will also save images to a new directory
+    # if the script is used twice on the same album in the same folder.
+    folderexists="TRUE"
+    test -d "$folder_name" || folderexists="FALSE"
+
+    if [[ "$folderexists" == "TRUE" ]]
+    then
+      tempdir="$(mktemp -d "$folder_name"_XXXXX)" || exit 1
+      folder_name="$tempdir"
+    else
+      mkdir -p "$folder_name"
+    fi
+
+    debug "folder_name = $folder_name" 
+
+    # Save link to album in a text file with the images.
+    echo "$url" >> "$folder_name/permalink.txt"
+    debug "permalink: $folder_name/permalink.txt"
+
+    # Get total number of images to properly display percent done.
+    total_images=0
+    for image_url in $(awk -F\" '/data-src/ {print $10}' "$htmltemp" | sed '/^$/d')
+    do
+      let "total_images = $total_images + 1"
+    done
+    debug "Total images = $total_images"
+
+    # Iterate over all images found.
+    for image_url in $(awk -F\" '/data-src/ {print $10}' "$htmltemp" | sed '/^$/d')
+    do
+      # Some albums have the thumbnail images out of order in the html source,
+      # this fixes that.
+      data_index="$(grep $image_url $htmltemp | awk -F\" '{print $12}')"
+      let "data_index = $data_index + 1"
+      data_index="$(echo $data_index)" # necessary to remove preceding newline.
+      debug "data_index: $data_index"
+
+      # Ensure no images are thumbnails.
+      # Always works because all images that could be in $image_url are currently
+      # thumbnails.
+      image_url=$(sed 's/s.jpg/.jpg/g' <<< "$image_url")
+      debug "image_url dethumbnailed: $image_url"
+
+      if [[ "$preserve_flag" == "TRUE" ]]
+      then # Preserve imgur naming conventions.
+        image_name="$(basename "$image_url")"
+      else # name images based on index value.
+        image_name="$data_index.jpg"
+      fi
+
+      debug "Downloading image: $(($count+1))"
+      # This is where the file is actually downloaded
+      # If a download fail we are going to give a best effort and place links to
+      if [[ "$silent_flag" == "TRUE" ]]
+      then
+        curl_args="-s"
+      fi
+      debug "$curl_args $image_url > $folder_name/$image_name"
+      curl "$curl_args" "$image_url" > "$folder_name"/"$image_name" ||
+        debug "failed to download: $image_url \n"
+
+      if [[ "$preserve_flag" == "TRUE" ]]
+      then # rename current file to force {1..11} sorting.
+        # This is needed so the next if statement can always get the right file.
+        new_image_name="$image_name"
+      else
+        # brief expl:     force 5 digits   basename         extension
+        new_image_name="$(printf %05d.%s ${image_name%.*} ${image_name##*.})"
+        mv "$folder_name"/"$image_name" "$folder_name"/"$new_image_name"
+        debug "Preserved Image Name: $new_image_name"
+      fi
+
+      # Read the mimetype to ensure proper image renaming.
+      if [[ "$(file --brief --mime "$folder_name"/"$new_image_name" | awk -F\; '{print $1}')" == "image/gif" ]]
+      then # rename the image with the proper extension.
+        mv "$folder_name"/"$new_image_name" \
+          "$folder_name"/"$(basename $new_image_name .jpg).gif"
+      fi
+
+      debug "Image Name: $new_image_name"
+
+      let "count = $count + 1"
+      if [[ "$silent_flag" == "FALSE" && "$count" != 0 ]]
+      then # display download progress.
+        percent="$(evaluate 2 "100 * $count / $total_images")"
+        percent="${percent/.*}"
+        prog="$(evaluate 2 "60 * $count / $total_images")"
+        if [[ "$percent" =~ ^[0-9]+$ ]]
+        then
+          progress_bar "$percent" "$prog"
+        fi
+        debug "Progress: $percent%"
+      fi
+    done
+  done
+
+  stdout ""
+  stdout "Finished with $count files downloaded."
+  debug "Completed successfully."
+  exit 0
+}
+
 function long_desc()
 {
   cat << EOF
@@ -57,7 +177,7 @@ exit 0
 
 function short_desc()
 {
-  stdout "usage: $0 [-cps] URL [URL]"
+  stdout "usage: $0 [-ps] URL [URL]"
   exit 1
 }
 
@@ -92,6 +212,30 @@ function debug()
   then
     echo "[$(echo "$(date +%s) - $time_start" | bc)] DEBUG: $@" 1>&2
   fi
+  curl_args="-s"
+}
+
+function parse_album_urls()
+{
+  # Populate album_urls with imgur albums. 
+  main_url=("$@")
+  debug "urls to parse: ${main_url[@]}"
+  for (( i = 0 ; i < "${#@}" ; i++ )); do
+    debug "Downloading html source (${main_url[$i]})..."
+    curl -sL "${main_url[$i]}" > "$htmltemp" || exit 6
+    debug "Parsing HTML..."
+
+    # 1) pull imgur album links
+    # 2) print out everything after /a/ but before anything else like /all#
+    album_urls+=" $(sed "s,\>,\\`echo -e '\n\r'`,g" "$htmltemp" \
+        | grep 'imgur.com/a/' \
+        | awk -F'//imgur.com/a/' '{print $2}' \
+        | awk -F'/all' '{print $1}' \
+        | sed 's,[^a-zA-Z0-9],,g' \
+        | xargs) "
+  done
+  debug "Urls parsed: ${album_urls[@]}"
+  echo "${album_urls[@]}"
 }
 
 function parse_folder_name()
@@ -100,13 +244,19 @@ function parse_folder_name()
   temp_folder_name="$(awk -F\" '/data-title/ {print $6; exit}' $htmltemp)"
   temp_folder_name="$(sed "s,&#039;,,g" <<< "$temp_folder_name")"
   temp_folder_name="$(sed 's,[^a-zA-Z0-9],_,g' <<< "$temp_folder_name")"
-  if [[ "$preserve" == "TRUE" ]] || [[ "$temp_folder_name" == "" ]]
+  if [[ "$preserve_flag" == "TRUE" ]] || [[ "$temp_folder_name" == "" ]]
   then # Create a name for a folder name based on the URL.
     temp_folder_name="$(basename "$url" | sed 's/\#.*//g')"
   fi
   echo "$temp_folder_name"
 }
 
+function remove_duplicate_array_elements()
+{
+  array=($@)
+  debug "Full array passed to function: ${array[@]}"
+  printf '%s\n' "${array[@]}" | sort -u
+}
 function evaluate()
 {
   # Evaluate a floating point number expression.
@@ -132,7 +282,7 @@ function progress_bar()
 }
 
 # Option Parsing
-while getopts ":hdcps" OPTION
+while getopts ":hdps" OPTION
 do
   case $OPTION in
     h)
@@ -146,11 +296,10 @@ do
       # Preserve Imgur's naming scheme. Please note that this will not keep the
       # order of the images. While this does break the spirit of the script it
       # is included here for the sake of completion.
-      preserve="TRUE" && debug "Preserve Flag Raised" 
+      preserve_flag="TRUE" && debug "Preserve Flag Raised" 
       ;;
     s)
       # Run silently.
-      curl_args="-s"
       silent_flag="TRUE" && debug "Silent Flag Raised" 
       ;;
     '?' | *)
@@ -161,155 +310,5 @@ do
 done
 shift $((OPTIND - 1))
 
-systems_check
-debug "html temp = $htmltemp"
-debug "log file  = $logfile"
-
-# Populate album_urls with imgur albums. 
-main_url=("$@")
-for (( i = 0 ; i < "${#@}" ; i++ ))
-do
-  debug "url to parse: ${main_url[$i]}"
-  if [[ "${main_url[$i]}" =~ 'imgur.com' ]]; then
-    debug "populate album_urls with albums in html source" 
-    curl -s "${main_url[$i]}" > "$htmltemp" || exit 6
-
-    # 1) pull imgur.com/a/ links
-    # 2) print out everything after /a/
-    # 3) strip of erroneous text e.x. "/all#" or "/>"
-    album_urls_temp="$(cat "$htmltemp" \
-      | grep 'imgur.com/a/' \
-      | awk -F'//imgur.com/a/' '{print $2}' \
-      | awk -F'/all' '{print $1}' \
-      | sed 's,[^a-zA-Z0-9],,g')" # Remove all non-alphanumeric characters.
-
-    # turn album_urls in an array
-    album_urls=($album_urls_temp)
-  fi
-done
-
-debug "Total urls = ${#album_urls[@]}"
-
-# make sure album_urls isn't empty.
-if [[ -z "${album_urls[0]}" ]]
-then
-  debug "$album_urls[0] is empty" 
-  short_desc
-  exit 1
-fi
-
-# Program Begins
-for url in "${album_urls[@]}"
-do
-  url="imgur.com/a/$url"
-  debug "url = $url"
-  count=0 # Reset counter
-
-  # Download the html source to a temp file for quick parsing.
-  curl -s "$url" > "$htmltemp"
-
-  folder_name="$(parse_folder_name)"
-
-  # It only takes one album named Pictures to possibly screw up
-  # an entire folder. This will also save images to a new directory
-  # if the script is used twice on the same album in the same folder.
-  test -d "$folder_name" || folderexists="FALSE"
-
-  if [[ "$folderexists" == "TRUE" ]]
-  then
-    tempdir="$(mktemp -d "$folder_name"_XXXXX)" || exit 1
-    folder_name="$tempdir"
-  else
-    mkdir -p "$folder_name"
-  fi
-
-  debug "folder_name = $folder_name" 
-
-  # Save link to album in a text file with the images.
-  echo "$url" >> "$folder_name/permalink.txt"
-  debug "permalink: $folder_name/permalink.txt"
-
-  # Get total number of images to properly display percent done.
-  total_images=0
-  for image_url in $(awk -F\" '/data-src/ {print $10}' "$htmltemp" | sed '/^$/d')
-  do
-    let "total_images = $total_images + 1"
-  done
-  debug "total_images = $total_images"
-
-  # Iterate over all images found.
-  for image_url in $(awk -F\" '/data-src/ {print $10}' "$htmltemp" | sed '/^$/d')
-  do
-    # Some albums have the thumbnail images out of order in the html source,
-    # this fixes that.
-    data_index="$(grep $image_url $htmltemp | awk -F\" '{print $12}')"
-    let "data_index = $data_index + 1"
-    data_index="$(echo $data_index)" # necessary to remove preceding newline.
-    debug "data_index: $data_index"
-
-    # Ensure no images are thumbnails.
-    # Always works because all images that could be in $image_url are currently
-    # thumbnails.
-    image_url=$(sed 's/s.jpg/.jpg/g' <<< "$image_url")
-    debug "image_url dethumbnailed: $image_url"
-
-    if [[ "$preserve" == "TRUE" ]]
-    then # Preserve imgur naming conventions.
-      image_name="$(basename "$image_url")"
-    else # name images based on index value.
-      image_name="$data_index.jpg"
-    fi
-
-    debug "Downloading image: $(($count+1))"
-    # This is where the file is actually downloaded
-    # If a download fail we are going to give a best effort and place links to
-    # images that were not downloaded properly into $logfile.
-    curl "$curl_args" "$image_url" > "$folder_name"/"$image_name" ||
-      printf "failed to download: $image_url \n" >> "$logfile"
-
-    if [[ "$preserve" == "TRUE" ]]
-    then # rename current file to force {1..11} sorting.
-      # This is needed so the next if statement can always get the right file.
-      new_image_name="$image_name"
-    else
-      # brief expl:     force 5 digits   basename         extension
-      new_image_name="$(printf %05d.%s ${image_name%.*} ${image_name##*.})"
-      mv "$folder_name"/"$image_name" "$folder_name"/"$new_image_name"
-      debug "Preserved Image Name: $new_image_name"
-    fi
-
-    # Read the mimetype to ensure proper image renaming.
-    if [[ "$(file --brief --mime "$folder_name"/"$new_image_name" | awk -F\; '{print $1}')" == "image/gif" ]]
-    then # rename the image with the proper extension.
-      mv "$folder_name"/"$new_image_name" \
-        "$folder_name"/"$(basename $new_image_name .jpg).gif"
-    fi
-
-    debug "Image Name: $new_image_name"
-
-    let "count = $count + 1"
-    if [[ "$silent_flag" == "FALSE" && "$count" != 0 ]]
-    then # display download progress.
-      percent="$(evaluate 2 "100 * $count / $total_images")"
-      percent="${percent/.*}"
-      prog="$(evaluate 2 "60 * $count / $total_images")"
-      if [[ "$percent" =~ ^[0-9]+$ ]]
-      then
-        progress_bar "$percent" "$prog"
-      fi
-      debug "Progress: $percent%"
-    fi
-  done
-done
-
-
-if [[ -s "$logfile" ]]
-then
-  stdout "Exited with errors, check $logfile"
-  exit 1
-else
-  stdout ""
-  stdout "Finished with $count files downloaded."
-  debug "Completed successfully."
-  exit 0
-fi
+systems_check 
+main $@

@@ -11,7 +11,7 @@ Author:
 
 ##Usage
 
-    bash imgur.sh [-dcps] URL [URL]
+    bash imgur.sh [-dps] URL [URL]
 
     OPTIONS
         -h       Show this message.
