@@ -228,7 +228,7 @@ function parse_folder_name()
 {
   # ;exit is needed since sometimes data-title appears twice
   temp_folder_name="$(awk -F\" '/data-title/ {print $6; exit}' $htmltemp)"
-  temp_folder_name="$(sed "s,&#039;,,g" <<< "$temp_folder_name")"
+  temp_folder_name="$(sed 's,&#039;,,g' <<< "$temp_folder_name")"
   temp_folder_name="$(sed 's,[^a-zA-Z0-9],_,g' <<< "$temp_folder_name")"
   if [[ "$preserve_flag" == "TRUE" ]] || [[ "$temp_folder_name" == "" ]]
   then # Create a name for a folder name based on the URL.
