@@ -127,7 +127,6 @@ function main()
   debug "Completed successfully."
   exit 0
 }
-
 function long_desc()
 {
   cat << EOF
@@ -159,13 +158,11 @@ AUTHOR
 EOF
 exit 0
 }
-
 function short_desc()
 {
   stdout "usage: $0 [-ps] URL [URL]"
   exit 1
 }
-
 function systems_check()
 {
   failed="FALSE"
@@ -181,7 +178,6 @@ function systems_check()
   fi
   debug 'All system requirements met.'
 }
-
 function stdout()
 {
   # Normal output is suppressed when debug flag is raised.
@@ -190,7 +186,6 @@ function stdout()
     echo "$@"
   fi
 }
-
 function debug()
 {
   # Debug output is suppressed when silent flag is raised.
@@ -200,7 +195,6 @@ function debug()
   fi
   curl_args="-s"
 }
-
 function parse_album_urls()
 {
   # Populate album_urls with imgur albums. 
@@ -223,7 +217,6 @@ function parse_album_urls()
   debug "Urls parsed: ${album_urls[@]}"
   echo "${album_urls[@]}"
 }
-
 function parse_folder_name()
 {
   # ;exit is needed since sometimes data-title appears twice
@@ -250,11 +243,9 @@ function parse_folder_name()
   mkdir -p "$temp_folder_name"
   echo "$temp_folder_name"
 }
-
 function remove_duplicate_array_elements()
 {
   array=($@)
-  debug "Full array passed to function: ${array[@]}"
   printf '%s\n' "${array[@]}" | sort -u
 }
 function evaluate()
@@ -266,7 +257,6 @@ function evaluate()
   shift 1
   echo "$(echo "scale=$scale; $@" | bc -q 2> /dev/null)"
 }
-
 function progress_bar()
 {
   printf "[%60s]       \r" " " # clear each time in case of accidental input.
