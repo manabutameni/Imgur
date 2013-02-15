@@ -31,29 +31,14 @@ function main()
   # Program Begins
   for url in "${album_urls[@]}"
   do
-    url="imgur.com/a/$url"
-    debug "url = $url"
     count=0 # Reset counter
+    url="imgur.com/a/$url"
 
     # Download the html source to a temp file for quick parsing.
     curl -s "$url" > "$htmltemp"
 
+    # Create a new folder for the images.
     folder_name="$(parse_folder_name)"
-
-    # It only takes one album named Pictures to possibly screw up
-    # an entire folder. This will also save images to a new directory
-    # if the script is used twice on the same album in the same folder.
-    folderexists="TRUE"
-    test -d "$folder_name" || folderexists="FALSE"
-
-    if [[ "$folderexists" == "TRUE" ]]
-    then
-      tempdir="$(mktemp -d "$folder_name"_XXXXX)" || exit 1
-      folder_name="$tempdir"
-    else
-      mkdir -p "$folder_name"
-    fi
-
     debug "folder_name = $folder_name" 
 
     # Save link to album in a text file with the images.
@@ -98,7 +83,7 @@ function main()
       then
         curl_args="-s"
       fi
-      debug "$curl_args $image_url > $folder_name/$image_name"
+      debug "curl $curl_args $image_url > $folder_name/$image_name"
       curl "$curl_args" "$image_url" > "$folder_name"/"$image_name" ||
         debug "failed to download: $image_url \n"
 
@@ -123,7 +108,7 @@ function main()
       debug "Image Name: $new_image_name"
 
       let "count = $count + 1"
-      if [[ "$silent_flag" == "FALSE" && "$count" != 0 ]]
+      if [[ "$silent_flag" == "FALSE" && "$count" != 0 && "$debug_flag" == "FALSE" ]]
       then # display download progress.
         percent="$(evaluate 2 "100 * $count / $total_images")"
         percent="${percent/.*}"
@@ -249,6 +234,20 @@ function parse_folder_name()
   then # Create a name for a folder name based on the URL.
     temp_folder_name="$(basename "$url" | sed 's/\#.*//g')"
   fi
+
+  # It only takes one album named Pictures to possibly screw up
+  # an entire folder. This will also save images to a new directory
+  # if the script is used twice on the same album in the same folder.
+  folderexists="TRUE"
+  test -d "$temp_folder_name" || folderexists="FALSE"
+
+  if [[ "$folderexists" == "TRUE" ]]
+  then
+    tempdir="$(mktemp -d "$temp_folder_name"_XXXXX)" || exit 1
+    temp_folder_name="$tempdir"
+  fi
+
+  mkdir -p "$temp_folder_name"
   echo "$temp_folder_name"
 }
 
@@ -270,15 +269,12 @@ function evaluate()
 
 function progress_bar()
 {
-  if [[ "$debug_flag" == "FALSE" ]]
-  then
-    printf "[%60s]       \r" " " # clear each time in case of accidental input.
-    printf "[%60s] $1\045\r" " " # Print off the percent completed passed to $1
-    printf "[%${2}s>\r" " " | tr ' ' '=' # Print progress bar as '=>'
-    if [[ "$2" == "60.00" ]]
-    then # Display completed progress bar.
-      printf "[%${2}s]\r" " " | tr ' ' '='
-    fi
+  printf "[%60s]       \r" " " # clear each time in case of accidental input.
+  printf "[%60s] $1\045\r" " " # Print off the percent completed passed to $1
+  printf "[%${2}s>\r" " " | tr ' ' '=' # Print progress bar as '=>'
+  if [[ "$2" == "60.00" ]]
+  then # Display completed progress bar.
+    printf "[%${2}s]\r" " " | tr ' ' '='
   fi
 }
 
