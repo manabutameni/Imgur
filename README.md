@@ -40,6 +40,11 @@ for KDE.
     export PATH
 Do note that you will need to append the last two lines to your ~/.bashrc
 
+After you have installed the script with this method you can always update to
+the latest version of the script with the following command:
+
+    curl https://raw.github.com/manabutameni/Imgur/master/imgur.sh -o /usr/local/bin/imgur
+
 To use:  
 In any directory type: `imgur imgur.com/a/XXXXX`  
 
@@ -53,6 +58,7 @@ Using setup.exe install the following:
 * bash
 * grep
 * sort
+* bc
 
 Then run the Cygwin terminal and paste the following:
 
@@ -89,7 +95,7 @@ Clicking the "Download" link on imgur albums does not save the order.
 ##### Requirements
 
 The following need to be installed for this script to work:  
-bash, basename, mktemp, curl, (g)awk, sed, sort
+bash, basename, mktemp, curl, (g)awk, sed, sort, bc
 
 ##### What this script does not do
 
