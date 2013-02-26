@@ -2,6 +2,7 @@
 # Requirements: bash, mktemp, basename, curl, (g)awk, sed, sort, bc
 
 # Declarations
+version="0.92"
 htmlname="$(basename $0)"
 logname="$htmlname"
 htmltemp="$(mktemp -t ${htmlname}.XXXXX).html" || exit 1
@@ -136,6 +137,7 @@ function long_desc()
   cat << EOF
 NAME
     imgur - a simple album downloader
+    Version: $version
 
 SYNOPSIS
     Download albums from imgur.com while retaining order.
@@ -145,10 +147,6 @@ OPTIONS
     -p        Preserve imgur's naming. (Warning! This will not retain order.)
     -s        Silent mode. Overrides debug mode.
     -d        Debug mode. Overrides stdout.
-
-EXAMPLE
-    bash imgur.sh -s http://imgur.com/a/fG58m#0 \\
-      reactiongifsarchive.imgur.com reddit.com/r/wallpapers
 
 ERROR CODES
     1: General failure.
