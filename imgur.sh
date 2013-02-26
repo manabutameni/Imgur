@@ -13,6 +13,7 @@ debug_flag="FALSE"
 
 function main()
 {
+	debug "Script Version: $version"
   debug "Passed arguments to main: $@"
   debug "html temp = $htmltemp"
 
