@@ -1,5 +1,5 @@
 #!/bin/bash
-# Requirements: bash, mktemp, basename, curl, (g)awk, sed, sort
+# Requirements: bash, mktemp, basename, curl, (g)awk, sed, sort, bc
 
 # Declarations
 htmlname="$(basename $0)"
@@ -172,6 +172,7 @@ function systems_check()
   command -v awk    > /dev/null || { failed="TRUE"; echo awk    not installed.; }
   command -v sed    > /dev/null || { failed="TRUE"; echo sed    not installed.; }
   command -v sort   > /dev/null || { failed="TRUE"; echo sort   not installed.; }
+	command -v bc     > /dev/null || { failed="TRUE"; echo bc     not installed.; }
   if [[ "$failed" == "TRUE" ]]
   then
     exit 127
@@ -207,7 +208,7 @@ function parse_album_urls()
 
     # 1) pull imgur album links
     # 2) print out everything after /a/ but before anything else like /all#
-    album_urls+=" $(sed "s,\>,\\`echo -e '\n\r'`,g" "$htmltemp" \
+    album_urls+=" $(sed "s,>,\\`echo -e '\n\r'`,g" "$htmltemp" \
         | grep 'imgur.com/a/' \
         | awk -F'//imgur.com/a/' '{print $2}' \
         | awk -F'/all' '{print $1}' \
