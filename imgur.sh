@@ -58,9 +58,14 @@ function main()
     do
       # Some albums have the thumbnail images out of order in the html source,
       # this fixes that.
-      data_index="$(grep $image_url $htmltemp | awk -F\" '{print $12}')"
-      let "data_index = $data_index + 1"
-      data_index="$(echo $data_index)" # necessary to remove preceding newline.
+      data_index_new="$(grep -m 2 $image_url $htmltemp | awk -F\" '{print $12}')"
+      data_index_new="$(echo $data_index_new)" # necessary to remove preceding newline.
+      if [[ "$data_index_new" == "" ]]
+      then
+        let "data_index_new = $data_index + 1"
+      fi
+      data_index="$(echo $data_index_new)"
+      # let "data_index = $data_index + 1"
       debug "data_index: $data_index"
 
       # Ensure no images are thumbnails.
@@ -76,9 +81,9 @@ function main()
         image_name="$data_index.jpg"
       fi
 
-      debug "Downloading image: $(($count+1))"
       # This is where the file is actually downloaded
       # If a download fail we are going to give a best effort and place links to
+      debug "Downloading image: $(($count+1))"
       if [[ "$silent_flag" == "TRUE" ]]
       then
         curl_args="-s"
@@ -91,11 +96,12 @@ function main()
       then # rename current file to force {1..11} sorting.
         # This is needed so the next if statement can always get the right file.
         new_image_name="$image_name"
+        debug "Preserved Image Name: $new_image_name"
       else
         # brief expl:     force 5 digits   basename         extension
         new_image_name="$(printf %05d.%s ${image_name%.*} ${image_name##*.})"
         mv "$folder_name"/"$image_name" "$folder_name"/"$new_image_name"
-        debug "Preserved Image Name: $new_image_name"
+        debug "New Image Name: $new_image_name"
       fi
 
       # Read the mimetype to ensure proper image renaming.
@@ -104,8 +110,6 @@ function main()
         mv "$folder_name"/"$new_image_name" \
           "$folder_name"/"$(basename $new_image_name .jpg).gif"
       fi
-
-      debug "Image Name: $new_image_name"
 
       let "count = $count + 1"
       if [[ "$silent_flag" == "FALSE" && "$count" != 0 && "$debug_flag" == "FALSE" ]]
@@ -172,7 +176,7 @@ function systems_check()
   command -v awk    > /dev/null || { failed="TRUE"; echo awk    not installed.; }
   command -v sed    > /dev/null || { failed="TRUE"; echo sed    not installed.; }
   command -v sort   > /dev/null || { failed="TRUE"; echo sort   not installed.; }
-	command -v bc     > /dev/null || { failed="TRUE"; echo bc     not installed.; }
+  command -v bc     > /dev/null || { failed="TRUE"; echo bc     not installed.; }
   if [[ "$failed" == "TRUE" ]]
   then
     exit 127
