@@ -2,7 +2,7 @@
 # Requirements: bash, mktemp, basename, curl, (g)awk, sed, sort, bc
 
 # Declarations
-version="0.93"
+version="0.94"
 htmlname="$(basename $0)"
 logname="$htmlname"
 htmltemp="$(mktemp -t ${htmlname}.XXXXX).html" || exit 1
@@ -103,7 +103,9 @@ function main()
         debug "Preserved Image Name: $new_image_name"
       else
         # brief expl:     force 5 digits   basename         extension
-        new_image_name="$(printf %05d.%s ${image_name%.*} ${image_name##*.})"
+        number_of_placeholders="$(grep -o "[0-9]" <<< "$total_images" | wc -l)"
+        number_of_placeholders="$(echo $number_of_placeholders)"
+        new_image_name="$(printf "%0$(echo $number_of_placeholders)d.%s" ${image_name%.*} ${image_name##*.})"
         mv "$folder_name"/"$image_name" "$folder_name"/"$new_image_name"
         debug "New Image Name: $new_image_name"
       fi
