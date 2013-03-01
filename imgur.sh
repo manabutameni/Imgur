@@ -2,7 +2,7 @@
 # Requirements: bash, mktemp, basename, curl, (g)awk, sed, sort, bc
 
 # Declarations
-version="0.92"
+version="0.93"
 htmlname="$(basename $0)"
 logname="$htmlname"
 htmltemp="$(mktemp -t ${htmlname}.XXXXX).html" || exit 1
@@ -229,7 +229,8 @@ function parse_folder_name()
   # ;exit is needed since sometimes data-title appears twice
   temp_folder_name="$(awk -F\" '/data-title/ {print $6; exit}' $htmltemp)"
   temp_folder_name="$(sed 's,&#039;,,g' <<< "$temp_folder_name")"
-  temp_folder_name="$(sed 's,[^a-zA-Z0-9],_,g' <<< "$temp_folder_name")"
+  temp_folder_name="$(sed 's,\&amp;,\&,g' <<< "$temp_folder_name")"
+  temp_folder_name="$(sed 's,[^a-zA-Z0-9&],_,g' <<< "$temp_folder_name")"
   if [[ "$preserve_flag" == "TRUE" ]] || [[ "$temp_folder_name" == "" ]]
   then # Create a name for a folder name based on the URL.
     temp_folder_name="$(basename "$url" | sed 's/\#.*//g')"
