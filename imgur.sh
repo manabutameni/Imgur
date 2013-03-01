@@ -41,6 +41,7 @@ function main()
 
     # Create a new folder for the images.
     folder_name="$(parse_folder_name)"
+    stdout "$folder_name"
     debug "folder_name = $folder_name" 
 
     # Save link to album in a text file with the images.
@@ -53,6 +54,7 @@ function main()
     do
       let "total_images = $total_images + 1"
     done
+    let "persistent_image_count += $total_images"
     debug "Total images = $total_images"
 
     # Iterate over all images found.
@@ -126,10 +128,11 @@ function main()
         debug "Progress: $percent%"
       fi
     done
+    stdout ""
   done
 
   stdout ""
-  stdout "Finished with $count files downloaded."
+  stdout "Finished with $persistent_image_count files downloaded."
   debug "Completed successfully."
   exit 0
 }
