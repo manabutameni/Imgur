@@ -2,7 +2,7 @@
 # Requirements: bash, mktemp, basename, curl, (g)awk, sed, sort, bc
 
 # Declarations
-version="0.94"
+version="0.95"
 htmlname="$(basename $0)"
 logname="$htmlname"
 htmltemp="$(mktemp -t ${htmlname}.XXXXX).html" || exit 1
