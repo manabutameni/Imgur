@@ -106,7 +106,10 @@ function main()
         number_of_placeholders="$(grep -o "[0-9]" <<< "$total_images" | wc -l)"
         number_of_placeholders="$(echo $number_of_placeholders)"
         new_image_name="$(printf "%0$(echo $number_of_placeholders)d.%s" ${image_name%.*} ${image_name##*.})"
-        mv "$folder_name"/"$image_name" "$folder_name"/"$new_image_name"
+        if [[ "$image_name" != "$new_image_name" ]]
+        then
+          mv "$folder_name"/"$image_name" "$folder_name"/"$new_image_name"
+        fi
         debug "New Image Name: $new_image_name"
       fi
 
