@@ -2,7 +2,7 @@
 # Requirements: bash, mktemp, basename, curl, (g)awk, sed, sort, bc
 
 # Declarations
-version="0.95"
+version="0.96"
 htmlname="$(basename $0)"
 logname="$htmlname"
 htmltemp="$(mktemp -t ${htmlname}.XXXXX).html" || exit 1
@@ -13,7 +13,6 @@ debug_flag="FALSE"
 
 function main()
 {
-  debug "Script Version: $version"
   debug "Passed arguments to main: $@"
   debug "html temp = $htmltemp"
 
@@ -174,6 +173,22 @@ function short_desc()
   stdout "usage: $0 [-ps] URL [URL]"
   exit 1
 }
+function update_check()
+{
+  new_version="$(curl -s https://raw.github.com/manabutameni/Imgur/master/version)"
+  debug "Github Script Version: $new_version"
+  if [[ "$new_version" > "$version" ]]
+  then
+    debug "======"
+    debug "There is an update for this script."
+    if [[ "$(command -v imgur)" != "" ]]
+    then
+      debug "Please update with the following shell command:"
+      debug "curl -sL https://raw.github.com/manabutameni/Imgur/master/imgur.sh -o `command -v imgur`"
+      debug "======"
+    fi
+  fi
+}
 function systems_check()
 {
   failed="FALSE"
@@ -189,6 +204,7 @@ function systems_check()
     exit 127
   fi
   debug 'All system requirements met.'
+  debug "Local Script Version: $version"
 }
 function stdout()
 {
@@ -311,4 +327,5 @@ done
 shift $((OPTIND - 1))
 
 systems_check 
+update_check
 main $@
