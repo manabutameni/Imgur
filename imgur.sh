@@ -2,7 +2,7 @@
 # Requirements: bash, mktemp, basename, curl, (g)awk, sed, sort, bc
 
 # Declarations
-version="0.96"
+version="0.97"
 htmlname="$(basename $0)"
 logname="$htmlname"
 htmltemp="$(mktemp -t ${htmlname}.XXXXX).html" || exit 1
@@ -327,5 +327,8 @@ done
 shift $((OPTIND - 1))
 
 systems_check 
-update_check
+if [[ "$debug_flag" == "TRUE" ]]
+then # Run a check to see if this script is the latest version.
+  update_check
+fi
 main $@
