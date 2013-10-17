@@ -92,7 +92,7 @@ function main()
         curl_args="-s"
       fi
       debug "curl $curl_args $image_url > $folder_name/$image_name"
-      curl "$curl_args" "$image_url" > "$folder_name"/"$image_name" ||
+      curl "$curl_args" "http:$image_url" > "$folder_name"/"$image_name" ||
         debug "failed to download: $image_url \n"
 
       if [[ "$preserve_flag" == "TRUE" ]]
