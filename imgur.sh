@@ -85,14 +85,17 @@ function main()
       fi
 
       # This is where the file is actually downloaded
-      # If a download fail we are going to give a best effort and place links to
       debug "Downloading image: $(($count+1))"
       if [[ "$silent_flag" == "TRUE" ]]
       then
         curl_args="-s"
       fi
+
+      image_url=`echo http:$image_url`
+      debug "image_url: $image_url"
+
       debug "curl $curl_args $image_url > $folder_name/$image_name"
-      curl "$curl_args" "http:$image_url" > "$folder_name"/"$image_name" ||
+      curl "$curl_args" "$image_url" > "$folder_name"/"$image_name" ||
         debug "failed to download: $image_url \n"
 
       if [[ "$preserve_flag" == "TRUE" ]]
