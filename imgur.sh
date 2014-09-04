@@ -232,18 +232,27 @@ function parse_album_urls()
   main_url=("$@")
   debug "urls to parse: ${main_url[@]}"
   for (( i = 0 ; i < "${#@}" ; i++ )); do
-    debug "Downloading html source (${main_url[$i]})..."
-    curl -sL "${main_url[$i]}" > "$htmltemp" || exit 6
-    debug "Parsing HTML..."
-
-    # 1) pull imgur album links
-    # 2) print out everything after /a/ but before anything else like /all#
-    album_urls+=" $(sed "s,>,\\`echo -e '\n\r'`,g" "$htmltemp" \
-        | grep 'imgur.com/a/' \
-        | awk -F'//imgur.com/a/' '{print $2}' \
-        | awk -F'/all' '{print $1}' \
-        | sed 's,[^a-zA-Z0-9],,g' \
-        | xargs) "
+    test_url=$(echo -n ${main_url[$i]} \
+	| awk -F'imgur.com/a/' '{print $2}' \
+	| awk -F'/all' '{print $1}' \
+	| sed 's,[^a-zA-Z0-9],,g')
+    if test -n "$test_url" 
+    then 
+      album_urls+=$test_url
+    else 
+      debug "Downloading html source (${main_url[$i]})..."
+      curl -sL "${main_url[$i]}" > "$htmltemp" || exit 6
+      debug "Parsing HTML..."
+  
+      # 1) pull imgur album links
+      # 2) print out everything after /a/ but before anything else like /all#
+      album_urls+=" $(sed "s,>,\\`echo -e '\n\r'`,g" "$htmltemp" \
+  	| grep 'imgur.com/a/' \
+  	| awk -F'//imgur.com/a/' '{print $2}' \
+  	| awk -F'/all' '{print $1}' \
+  	| sed 's,[^a-zA-Z0-9],,g' \
+  	| xargs) "
+    fi
   done
   debug "Urls parsed: ${album_urls[@]}"
   echo "${album_urls[@]}"
