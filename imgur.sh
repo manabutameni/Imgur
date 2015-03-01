@@ -177,14 +177,13 @@ function short_desc() {
 }
 
 function update_check() {
-  new_version="$(curl -s https://raw.github.com/manabutameni/Imgur/master/version)"
-  debug "Github Script Version: $new_version"
+  local new_version="$(curl -s https://raw.github.com/manabutameni/Imgur/master/version)"
   if [[ "$new_version" != "$version" ]]; then
-    debug "There is an update for this script."
-    if [[ "$(command -v imgur)" != "" ]]; then
-      debug "Please update with the following shell command:"
-      debug "curl -sL https://raw.github.com/manabutameni/Imgur/master/imgur.sh -o `command -v imgur`"
-    fi
+    echo "+-----------------------------------------------------------------+"
+    echo "|              There is an update for this script.                |"
+    echo "|    https://raw.github.com/manabutameni/Imgur/master/imgur.sh    |"
+    echo "| changelog: https://github.com/manabutameni/Imgur/commits/master |"
+    echo "+-----------------------------------------------------------------+"
   fi
 }
 
