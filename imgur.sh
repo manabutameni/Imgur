@@ -188,16 +188,12 @@ function update_check() {
 }
 
 function systems_check() {
-  failed="FALSE"
   required=("bash" "mktemp" "curl" "awk" "sed" "sort" "bc")
   for command in ${required[@]}; do
-    command -v $command > /dev/null || { failed="TRUE"; echo $command not installed.; }
+    command -v "$command" > /dev/null || {
+      echo "$command not installed."; exit 127
+    }
   done
-  if [[ "$failed" == "TRUE" ]]; then
-    exit 127
-  fi
-  debug 'All system requirements met.'
-  debug "Local Script Version: $version"
 }
 
 function stdout() {
