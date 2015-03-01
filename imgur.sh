@@ -12,8 +12,7 @@ preserve_flag="FALSE"
 silent_flag="FALSE"
 debug_flag="FALSE"
 
-function main()
-{
+function main() {
   debug "Passed arguments to main: $@"
   debug "html temp = $htmltemp"
 
@@ -144,8 +143,12 @@ function main()
   debug "Completed successfully."
   exit 0
 }
-function long_desc()
-{
+
+function api_call() {
+  echo -L "${1}?client_id=${api}"
+}
+
+function long_desc() {
   cat << EOF
 NAME
     imgur - a simple album downloader
@@ -172,13 +175,13 @@ AUTHOR
 EOF
 exit 0
 }
-function short_desc()
-{
+
+function short_desc() {
   stdout "usage: $0 [-ps] URL [URL]"
   exit 1
 }
-function update_check()
-{
+
+function update_check() {
   new_version="$(curl -s https://raw.github.com/manabutameni/Imgur/master/version)"
   debug "Github Script Version: $new_version"
   if [[ "$new_version" > "$version" ]]
@@ -193,33 +196,29 @@ function update_check()
     fi
   fi
 }
-function systems_check()
-{
+
+function systems_check() {
   failed="FALSE"
-  command -v bash   > /dev/null || { failed="TRUE"; echo Bash   not installed.; }
-  command -v mktemp > /dev/null || { failed="TRUE"; echo mktemp not installed.; }
-  command -v curl   > /dev/null || { failed="TRUE"; echo cURL   not installed.; }
-  command -v awk    > /dev/null || { failed="TRUE"; echo awk    not installed.; }
-  command -v sed    > /dev/null || { failed="TRUE"; echo sed    not installed.; }
-  command -v sort   > /dev/null || { failed="TRUE"; echo sort   not installed.; }
-  command -v bc     > /dev/null || { failed="TRUE"; echo bc     not installed.; }
-  if [[ "$failed" == "TRUE" ]]
-  then
+  required=("bash" "mktemp" "curl" "awk" "sed" "sort" "bc")
+  for command in ${required[@]}; do
+    command -v $command > /dev/null || { failed="TRUE"; echo $command not installed.; }
+  done
+  if [[ "$failed" == "TRUE" ]]; then
     exit 127
   fi
   debug 'All system requirements met.'
   debug "Local Script Version: $version"
 }
-function stdout()
-{
+
+function stdout() {
   # Normal output is suppressed when debug flag is raised.
   if [[ "$debug_flag" == "FALSE" ]] && [[ "$silent_flag" == "FALSE" ]]
   then
     echo "$@"
   fi
 }
-function debug()
-{
+
+function debug() {
   # Debug output is suppressed when silent flag is raised.
   if [[ "$debug_flag" == "TRUE" ]] && [[ "$silent_flag" == "FALSE" ]]
   then
@@ -227,8 +226,8 @@ function debug()
   fi
   curl_args="-s"
 }
-function parse_album_urls()
-{
+
+function parse_album_urls() {
   # Populate album_urls with imgur albums. 
   main_url=("$@")
   debug "urls to parse: ${main_url[@]}"
@@ -249,8 +248,8 @@ function parse_album_urls()
   debug "Urls parsed: ${album_urls[@]}"
   echo "${album_urls[@]}"
 }
-function parse_folder_name()
-{
+
+function parse_folder_name() {
   # ;exit is needed since sometimes data-title appears twice
   temp_folder_name="$(awk -F\" '/data-title/ {print $6; exit}' $htmltemp)"
   temp_folder_name="$(sed 's,&#039;,,g' <<< "$temp_folder_name")"
@@ -276,13 +275,13 @@ function parse_folder_name()
   mkdir -p "$temp_folder_name"
   echo "$temp_folder_name"
 }
-function remove_duplicate_array_elements()
-{
+
+function remove_duplicate_array_elements() {
   array=($@)
   printf '%s\n' "${array[@]}" | sort -u
 }
-function evaluate()
-{
+
+function evaluate() {
   # Evaluate a floating point number expression.
   # There must be an argument and it must be an integer.
   # Example: evaluate 3 "4 * 5.2" ; # would set the scale to 3
@@ -290,8 +289,8 @@ function evaluate()
   shift 1
   echo "$(echo "scale=$scale; $@" | bc -q 2> /dev/null)"
 }
-function progress_bar()
-{
+
+function progress_bar() {
   printf "[%60s]       \r" " " # clear each time in case of accidental input.
   printf "[%60s] $1\045\r" " " # Print off the percent completed passed to $1
   printf "[%${2}s>\r" " " | tr ' ' '=' # Print progress bar as '=>'
@@ -331,8 +330,9 @@ done
 shift $((OPTIND - 1))
 
 systems_check 
-if [[ "$debug_flag" == "TRUE" ]]
-then # Run a check to see if this script is the latest version.
+
+if [[ "$debug_flag" == "TRUE" ]]; then
   update_check
 fi
+
 main $@
