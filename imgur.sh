@@ -184,7 +184,7 @@ function short_desc() {
 function update_check() {
   new_version="$(curl -s https://raw.github.com/manabutameni/Imgur/master/version)"
   debug "Github Script Version: $new_version"
-  if [[ "$new_version" > "$version" ]]
+  if [[ "$new_version" != "$version" ]]
   then
     debug "======"
     debug "There is an update for this script."
