@@ -13,7 +13,7 @@ function main() {
 }
 
 function api_call() {
-  echo "${1}?client_id=${api}"
+  curl "https://api.imgur.com/3/${@}" --header "Authorization: Client-ID ${api}"
 }
 
 function long_desc() {
