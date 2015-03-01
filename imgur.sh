@@ -22,8 +22,7 @@ function main() {
   debug "Truncated album_urls: ${album_urls[@]}"
 
   # make sure album_urls isn't empty.
-  if [[ -z "${album_urls[0]}" ]]
-  then
+  if [[ -z "${album_urls[0]}" ]]; then
     debug "album_urls[0] is empty" 
     short_desc
     exit 1
@@ -63,8 +62,7 @@ function main() {
       # this fixes that.
       data_index_new="$(grep -m 2 $image_url $htmltemp | awk -F\" '{print $12}')"
       data_index_new="$(echo $data_index_new)" # necessary to remove preceding newline.
-      if [[ "$data_index_new" == "" ]]
-      then
+      if [[ "$data_index_new" == "" ]]; then
         let "data_index_new = $data_index + 1"
       fi
       data_index="$(echo $data_index_new)"
@@ -77,8 +75,8 @@ function main() {
       image_url=$(sed 's/s.jpg/.jpg/g' <<< "$image_url")
       debug "image_url dethumbnailed: $image_url"
 
-      if [[ "$preserve_flag" == "TRUE" ]]
-      then # Preserve imgur naming conventions.
+      if [[ "$preserve_flag" == "TRUE" ]]; then
+        # Preserve imgur naming conventions.
         image_name="$(basename "$image_url")"
       else # name images based on index value.
         image_name="$data_index.jpg"
@@ -86,8 +84,7 @@ function main() {
 
       # This is where the file is actually downloaded
       debug "Downloading image: $(($count+1))"
-      if [[ "$silent_flag" == "TRUE" ]]
-      then
+      if [[ "$silent_flag" == "TRUE" ]]; then
         curl_args="-s"
       fi
 
@@ -98,8 +95,8 @@ function main() {
       curl "$curl_args" "$image_url" > "$folder_name"/"$image_name" ||
         debug "failed to download: $image_url \n"
 
-      if [[ "$preserve_flag" == "TRUE" ]]
-      then # rename current file to force {1..11} sorting.
+      if [[ "$preserve_flag" == "TRUE" ]]; then
+        # rename current file to force {1..11} sorting.
         # This is needed so the next if statement can always get the right file.
         new_image_name="$image_name"
         debug "Preserved Image Name: $new_image_name"
@@ -108,28 +105,26 @@ function main() {
         number_of_placeholders="$(grep -o "[0-9]" <<< "$total_images" | wc -l)"
         number_of_placeholders="$(echo $number_of_placeholders)"
         new_image_name="$(printf "%0$(echo $number_of_placeholders)d.%s" ${image_name%.*} ${image_name##*.})"
-        if [[ "$image_name" != "$new_image_name" ]]
-        then
+        if [[ "$image_name" != "$new_image_name" ]]; then
           mv "$folder_name"/"$image_name" "$folder_name"/"$new_image_name"
         fi
         debug "New Image Name: $new_image_name"
       fi
 
       # Read the mimetype to ensure proper image renaming.
-      if [[ "$(file --brief --mime "$folder_name"/"$new_image_name" | awk -F\; '{print $1}')" == "image/gif" ]]
-      then # rename the image with the proper extension.
+      if [[ "$(file --brief --mime "$folder_name"/"$new_image_name" | awk -F\; '{print $1}')" == "image/gif" ]]; then
+        # rename the image with the proper extension.
         mv "$folder_name"/"$new_image_name" \
           "$folder_name"/"$(basename $new_image_name .jpg).gif"
       fi
 
       let "count = $count + 1"
-      if [[ "$silent_flag" == "FALSE" && "$count" != 0 && "$debug_flag" == "FALSE" ]]
-      then # display download progress.
+      if [[ "$silent_flag" == "FALSE" && "$count" != 0 && "$debug_flag" == "FALSE" ]]; then
+        # display download progress.
         percent="$(evaluate 2 "100 * $count / $total_images")"
         percent="${percent/.*}"
         prog="$(evaluate 2 "60 * $count / $total_images")"
-        if [[ "$percent" =~ ^[0-9]+$ ]]
-        then
+        if [[ "$percent" =~ ^[0-9]+$ ]]; then
           progress_bar "$percent" "$prog"
         fi
         debug "Progress: $percent%"
@@ -184,15 +179,11 @@ function short_desc() {
 function update_check() {
   new_version="$(curl -s https://raw.github.com/manabutameni/Imgur/master/version)"
   debug "Github Script Version: $new_version"
-  if [[ "$new_version" != "$version" ]]
-  then
-    debug "======"
+  if [[ "$new_version" != "$version" ]]; then
     debug "There is an update for this script."
-    if [[ "$(command -v imgur)" != "" ]]
-    then
+    if [[ "$(command -v imgur)" != "" ]]; then
       debug "Please update with the following shell command:"
       debug "curl -sL https://raw.github.com/manabutameni/Imgur/master/imgur.sh -o `command -v imgur`"
-      debug "======"
     fi
   fi
 }
@@ -212,16 +203,14 @@ function systems_check() {
 
 function stdout() {
   # Normal output is suppressed when debug flag is raised.
-  if [[ "$debug_flag" == "FALSE" ]] && [[ "$silent_flag" == "FALSE" ]]
-  then
+  if [[ "$debug_flag" == "FALSE" ]] && [[ "$silent_flag" == "FALSE" ]]; then
     echo "$@"
   fi
 }
 
 function debug() {
   # Debug output is suppressed when silent flag is raised.
-  if [[ "$debug_flag" == "TRUE" ]] && [[ "$silent_flag" == "FALSE" ]]
-  then
+  if [[ "$debug_flag" == "TRUE" ]] && [[ "$silent_flag" == "FALSE" ]]; then
     echo "[$(echo "$(date +%s) - $time_start" | bc)] DEBUG: $@" 1>&2
   fi
   curl_args="-s"
@@ -255,8 +244,8 @@ function parse_folder_name() {
   temp_folder_name="$(sed 's,&#039;,,g' <<< "$temp_folder_name")"
   temp_folder_name="$(sed 's,\&amp;,\&,g' <<< "$temp_folder_name")"
   temp_folder_name="$(sed 's,[^a-zA-Z0-9&],_,g' <<< "$temp_folder_name")"
-  if [[ "$preserve_flag" == "TRUE" ]] || [[ "$temp_folder_name" == "" ]]
-  then # Create a name for a folder name based on the URL.
+  if [[ "$preserve_flag" == "TRUE" ]] || [[ "$temp_folder_name" == "" ]]; then
+    # Create a name for a folder name based on the URL.
     temp_folder_name="$(basename "$url" | sed 's/\#.*//g')"
   fi
 
@@ -266,8 +255,7 @@ function parse_folder_name() {
   folderexists="TRUE"
   test -d "$temp_folder_name" || folderexists="FALSE"
 
-  if [[ "$folderexists" == "TRUE" ]]
-  then
+  if [[ "$folderexists" == "TRUE" ]]; then
     tempdir="$(mktemp -d "$temp_folder_name"_XXXXX)" || exit 1
     temp_folder_name="$tempdir"
   fi
@@ -294,8 +282,8 @@ function progress_bar() {
   printf "[%60s]       \r" " " # clear each time in case of accidental input.
   printf "[%60s] $1\045\r" " " # Print off the percent completed passed to $1
   printf "[%${2}s>\r" " " | tr ' ' '=' # Print progress bar as '=>'
-  if [[ "$2" == "60.00" ]]
-  then # Display completed progress bar.
+  if [[ "$2" == "60.00" ]]; then
+    # Display completed progress bar.
     printf "[%${2}s]\r" " " | tr ' ' '='
   fi
 }
