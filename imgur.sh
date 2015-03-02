@@ -6,9 +6,13 @@ required=("bash" "curl" "bc" "jsawk")
 version="0.99-b"
 
 function main() {
+  function get_album_id() {
+    echo "${@}" | grep --only 'imgur.com/a/[[:alnum:]]*' | awk -F/ '{print $3}'
+  }
+
   urls=("$@")
   for url in ${urls[@]}; do
-    debug "url: $url"
+    album_id="$(get_album_id "$url")"
   done
 }
 
