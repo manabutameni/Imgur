@@ -17,8 +17,12 @@ function main() {
   urls=("$@")
   for url in ${urls[@]}; do
     album_id="$(get_album_id "$url")"
+    debug "$album_id"
     album_json="$(api_call "album/$album_id")"
+    debug "$album_json"
     album_name="$(get_album_name "$album_id")"
+    debug "$album_name"
+    mkdir "$album_name"
   done
 }
 
@@ -80,15 +84,15 @@ function systems_check() {
 
 function stdout() {
   # Normal output is suppressed when debug flag is raised.
-  if [[ "$debug_flag" == "FALSE" ]] && [[ "$silent_flag" == "FALSE" ]]; then
+  if [[ "$debug_flag" == false ]] && [[ "$silent_flag" == false ]]; then
     echo "$@"
   fi
 }
 
 function debug() {
   # Debug output is suppressed when silent flag is raised.
-  if [[ "$debug_flag" == "TRUE" ]] && [[ "$silent_flag" == "FALSE" ]]; then
-    echo "[$(echo "$(date +%s) - $time_start" | bc)] DEBUG: $@" 1>&2
+  if [[ "$debug_flag" == true ]] && [[ "$silent_flag" == false ]]; then
+    echo "DEBUG: $@" 1>&2
   fi
 }
 
@@ -108,6 +112,9 @@ function progress_bar() {
   fi
 }
 
+debug_flag=false
+silent_flag=false
+
 while getopts ":hdsp" OPTION; do
   case $OPTION in
     h)
@@ -120,9 +127,6 @@ while getopts ":hdsp" OPTION; do
     s)
       silent_flag=true
       ;;
-    p)
-      preserve_flag=true
-      ;;
     *)
       stdout "Invalid option: '-$OPTARG'"
       short_desc
@@ -133,7 +137,7 @@ shift $((OPTIND - 1))
 
 systems_check 
 
-if [[ "$debug_flag" == "TRUE" ]]; then
+if [[ "$debug_flag" == true ]]; then
   update_check
 fi
 
