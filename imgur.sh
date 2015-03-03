@@ -41,7 +41,7 @@ function main() {
     continue_if_error
 
     album_name="$(get_album_name "$album_id")"
-    continue_if_empty_var "$album_id"
+    continue_if_empty_var "$album_name"
     debug "$album_name"
 
     mkdir "$album_name"
