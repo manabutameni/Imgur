@@ -2,7 +2,7 @@
 
 # Declarations
 api="3c1a21006e8a7a9"
-required=("bash" "curl" "bc" "jsawk")
+required=("bash" "curl" "bc" "jsawk" "iconv")
 version="0.99-b"
 
 function main() {
@@ -10,9 +10,15 @@ function main() {
     echo "${@}" | grep --only 'imgur.com/a/[[:alnum:]]*' | awk -F/ '{print $3}'
   }
 
+  function get_album_name() {
+    echo "$album_json" | LC_ALL=C jsawk 'return this.data.title' | iconv -f ISO-8859-1
+  }
+
   urls=("$@")
   for url in ${urls[@]}; do
     album_id="$(get_album_id "$url")"
+    album_json="$(api_call "album/$album_id")"
+    album_name="$(get_album_name "$album_id")"
   done
 }
 
