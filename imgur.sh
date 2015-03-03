@@ -14,14 +14,36 @@ function main() {
     echo "$album_json" | LC_ALL=C jsawk 'return this.data.title' | iconv -f ISO-8859-1
   }
 
+  function continue_if_empty_var() {
+    if [[ "$1" == "" ]]; then
+      echo "There was an error with the album." 1>&2
+      debug "continue_if_empty_var"
+      continue
+    fi
+  }
+
+  function continue_if_error() {
+    status="$(echo "$album_json" | jsawk 'return this.status')"
+    if [[ "$status" != 200 ]]; then
+      echo "There was an error with the album." 1>&2
+      debug "continue_if_error"
+      continue
+    fi
+  }
+
   urls=("$@")
   for url in ${urls[@]}; do
     album_id="$(get_album_id "$url")"
+    continue_if_empty_var "$album_id"
     debug "$album_id"
+
     album_json="$(api_call "album/$album_id")"
-    debug "$album_json"
+    continue_if_error
+
     album_name="$(get_album_name "$album_id")"
+    continue_if_empty_var "$album_id"
     debug "$album_name"
+
     mkdir "$album_name"
   done
 }
