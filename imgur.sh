@@ -14,6 +14,10 @@ function main() {
     echo "$album_json" | LC_ALL=C jsawk 'return this.data.title' | iconv -f ISO-8859-1
   }
 
+  function get_image_ids() {
+    echo "$album_json" | jsawk 'return this.data.images' | jsawk -n 'out(this.id)'
+  }
+
   function continue_if_empty_var() {
     if [[ "$1" == "" ]]; then
       echo "There was an error with the album." 1>&2
