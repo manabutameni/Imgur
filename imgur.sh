@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 # Declarations
 api="3c1a21006e8a7a9"
 required=("bash" "curl" "bc" "jsawk" "iconv")
