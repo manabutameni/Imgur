@@ -11,19 +11,16 @@ Author:
 
 ##Usage
 
-    bash imgur.sh [-dps] URL [URL]
+    bash imgur.sh [-sd] URL [URL]
 
     OPTIONS
         -h       Show this message.
-        -p       Preserve imgur's naming. (Warning! This will not retain order.)
         -s       Silent mode. Overrides debug mode.
         -d       Debug mode. Overrides starndard output.
 
 Multiple albums can be downloaded like so: `bash imgur.sh URL1 URL2 ...`
 
 ##Installation
-
-Ensure you have the required software. See [Requirements](#requirements).
 
 This is only necessary if you want to run the script without having it in the
 same folder you want the imgur album, or if you want to install imgur.desktop
@@ -48,30 +45,6 @@ the latest version of the script with the following command:
 To use:  
 In any directory type: `imgur imgur.com/a/XXXXX`  
 
-##### Windows under cygwin
-
-[Cygwin website](http://cygwin.com/install.html)  
-Using setup.exe install the following:
-* curl
-* sed
-* gawk
-* bash
-* grep
-* sort
-* bc
-
-Then run the Cygwin terminal and paste the following:
-
-    mkdir -p /usr/local/bin
-    cd /usr/local/bin
-    curl https://raw.github.com/manabutameni/Imgur/master/imgur.sh -o imgur
-    chmod +x imgur
-
-To use:
-`imgur imgur.com/a/XXXXX`
-
-Note: Make sure "/usr/local/bin" is stated under `echo $PATH`.
-
 #####KDE
 
 There is a file named imgur.desktop with you in mind. Simply copy imgur.desktop
@@ -90,12 +63,6 @@ Installation part of this readme.
 I wanted to write a script that would ensure that each image is in the proper
 order which you can't do by clicking the "Download" button on imgur albums.
 Clicking the "Download" link on imgur albums does not save the order.
-[Example album](http://imgur.com/a/NhmjT/all#0)
-
-##### Requirements
-
-The following need to be installed for this script to work:  
-bash, basename, mktemp, curl, (g)awk, sed, sort, bc
 
 ##### What this script does not do
 
