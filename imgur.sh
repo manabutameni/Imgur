@@ -66,7 +66,7 @@ function api_call() {
   curl -s "https://api.imgur.com/3/${@}" --header "Authorization: Client-ID ${api}"
 }
 
-function long_desc() {
+function long_description() {
   cat << EOF
 NAME
     imgur - a simple album downloader
@@ -88,7 +88,7 @@ EOF
 exit 0
 }
 
-function short_desc() {
+function short_description() {
   stdout "usage: $0 [-sd] URL [URL]"
   exit 1
 }
@@ -148,7 +148,7 @@ silent_flag=false
 while getopts ":hdsp" OPTION; do
   case $OPTION in
     h)
-      long_desc
+      long_description
       exit 0
       ;;
     d)
@@ -159,7 +159,7 @@ while getopts ":hdsp" OPTION; do
       ;;
     *)
       stdout "Invalid option: '-$OPTARG'"
-      short_desc
+      short_description
       ;;
   esac
 done
