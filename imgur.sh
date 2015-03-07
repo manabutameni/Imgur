@@ -66,6 +66,19 @@ function main() {
       filename="$(printf "%0${preceding_zeros}d" "$num").${image##*.}"
       debug "${album_name}/${filename}"
       curl -sL "$image" -o "${album_name}/${filename}"
+
+      if [[ "$silent_flag" == false && "$num" != 0 && "$debug_flag" == false ]]; then
+        percent="$(evaluate 2 "100 * $num / $number_of_images")"
+        percent="${percent/.*}"
+        prog="$(evaluate 2 "60 * $num / $number_of_images")"
+        if [[ "$percent" =~ ^[0-9]+$ ]]; then
+          progress_bar "$percent" "$prog"
+        fi
+        if [[ "$number_of_images" == "$num" ]]; then
+          echo
+        fi
+        debug "Progress: $percent%"
+      fi
     done
   done
 }
