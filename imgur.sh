@@ -54,6 +54,11 @@ function main() {
     debug "Number of Images: ${#album_images[@]}"
 
     mkdir "$album_name"
+
+    for image in ${album_images[@]}; do
+      continue_if_empty_var "$image"
+      debug "Image: $image"
+    done
   done
 }
 
