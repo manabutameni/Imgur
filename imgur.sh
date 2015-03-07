@@ -77,7 +77,6 @@ SYNOPSIS
 
 OPTIONS
     -h        Show this message.
-    -p        Preserve imgur's naming. (Warning! This will not retain order.)
     -s        Silent mode. Overrides debug mode.
     -d        Debug mode. Overrides stdout.
 
@@ -95,7 +94,7 @@ exit 0
 }
 
 function short_desc() {
-  stdout "usage: $0 [-ps] URL [URL]"
+  stdout "usage: $0 [-sd] URL [URL]"
   exit 1
 }
 
