@@ -14,7 +14,7 @@ function main() {
     echo "$album_json" | LC_ALL=C jsawk 'return this.data.title' | iconv -f ISO-8859-1
   }
 
-  function get_image_ids() {
+  function get_album_images() {
     echo "$album_json" | jsawk 'return this.data.images' | jsawk -n 'out(this.id)'
   }
 
