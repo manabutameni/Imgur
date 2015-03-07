@@ -57,9 +57,15 @@ function main() {
 
     mkdir "$album_name"
 
+    num=0
+    let "preceding_zeros = $(echo $number_of_images | wc -c)"
     for image in ${album_images[@]}; do
       continue_if_empty_var "$image"
-      debug "Image: $image"
+      debug "$image"
+      let "num += 1"
+      filename="$(printf "%0${preceding_zeros}d" "$num").${image##*.}"
+      debug "${album_name}/${filename}"
+      curl -sL "$image" -o "${album_name}/${filename}"
     done
   done
 }
