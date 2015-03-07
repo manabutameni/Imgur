@@ -50,8 +50,10 @@ function main() {
     debug "Album Name: \"$album_name\""
 
     album_images=($(get_album_images "$album_id"))
+    number_of_images="${#album_images[@]}"
     continue_if_empty_var "$album_images"
-    debug "Number of Images: ${#album_images[@]}"
+    debug "Number of Images: $number_of_images"
+    debug "Number of Images According to Imgur: $(echo "$album_json" | jsawk 'return this.data.images_count')"
 
     mkdir "$album_name"
 
