@@ -80,11 +80,6 @@ OPTIONS
     -s        Silent mode. Overrides debug mode.
     -d        Debug mode. Overrides stdout.
 
-ERROR CODES
-    1: General failure.
-    6: Could not resolve host (cURL failure).
-  127: Command not found.
-
 AUTHOR
     manabutameni
     https://github.com/manabutameni/Imgur
