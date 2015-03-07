@@ -42,6 +42,7 @@ function main() {
     debug "Album ID: $album_id"
 
     album_json="$(api_call "album/$album_id")"
+    continue_if_empty_var "$album_json"
     continue_if_error
 
     album_name="$(get_album_name "$album_id")"
