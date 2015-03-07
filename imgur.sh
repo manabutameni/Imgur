@@ -48,6 +48,10 @@ function main() {
     continue_if_empty_var "$album_name"
     debug "$album_name"
 
+    album_images=($(get_album_images "$album_id"))
+    continue_if_empty_var "$album_images"
+    debug "Number of Images: ${#album_images[@]}"
+
     mkdir "$album_name"
   done
 }
