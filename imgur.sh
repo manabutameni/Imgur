@@ -15,7 +15,7 @@ function main() {
   }
 
   function get_album_images() {
-    echo "$album_json" | jsawk 'return this.data.images' | jsawk -n 'out(this.id)'
+    echo "$album_json" | jsawk 'return this.data.images' | jsawk -n 'out(this.link)'
   }
 
   function continue_if_empty_var() {
