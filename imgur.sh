@@ -117,7 +117,7 @@ function short_description() {
 }
 
 function update_check() {
-  local new_version="$(curl -s https://raw.github.com/manabutameni/Imgur/master/version)"
+  local new_version="$(curl -sL https://raw.github.com/manabutameni/Imgur/master/version)"
   if [[ "$new_version" != "$version" ]]; then
     echo "+-----------------------------------------------------------------+"
     echo "|              There is an update for this script.                |"
