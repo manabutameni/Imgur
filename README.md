@@ -21,7 +21,7 @@ Multiple albums can be downloaded like so: `bash imgur.sh URL1 URL2 ...`
 ##Requirements
 
   * [jsawk](https://github.com/micha/jsawk)
-  * [iconv](man7.org/linux/man-pages/man1/iconv.1.html)
+  * [iconv](http://man7.org/linux/man-pages/man1/iconv.1.html)
   * [curl](http://curl.haxx.se/)
 
 
