@@ -1,11 +1,11 @@
 #!/bin/bash
 
-set -eu
+set -e
 
 # Declarations
 api="3c1a21006e8a7a9"
 required=("bash" "curl" "bc" "jsawk" "iconv")
-version="0.99"
+version="0.99.1"
 
 function main() {
   function get_album_id() {
@@ -48,6 +48,10 @@ function main() {
     continue_if_error
 
     album_name="$(get_album_name "$album_id")"
+    album_name="${album_name//\//$(echo -e '\xE2\x81\x84')}"
+    if [ -z "$album_name" ]; then
+      album_name="$album_id"
+    fi
     continue_if_empty_var "$album_name"
     debug "Album Name: \"$album_name\""
 
