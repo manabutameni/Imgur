@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -e
 
 # Declarations
 api="3c1a21006e8a7a9"
