@@ -5,7 +5,7 @@ set -e
 # Declarations
 api="3c1a21006e8a7a9"
 required=("bash" "curl" "bc" "jsawk" "iconv")
-version="0.99"
+version="0.99.1"
 
 function main() {
   function get_album_id() {
