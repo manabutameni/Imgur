@@ -48,6 +48,7 @@ function main() {
     continue_if_error
 
     album_name="$(get_album_name "$album_id")"
+    album_name="${album_name//\//$(echo -e '\xE2\x81\x84')}"
     if [ -z "$album_name" ]; then
       album_name="$album_id"
     fi
