@@ -48,6 +48,9 @@ function main() {
     continue_if_error
 
     album_name="$(get_album_name "$album_id")"
+    if [ -z "$album_name" ]; then
+      album_name="$album_id"
+    fi
     continue_if_empty_var "$album_name"
     debug "Album Name: \"$album_name\""
 
