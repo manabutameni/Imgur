@@ -34,15 +34,11 @@ for KDE.
     curl -L https://raw.github.com/manabutameni/Imgur/master/imgur.sh -o /usr/local/bin/imgur
     chmod +x /usr/local/bin/imgur
 
-NOTE: This assumes you have /usr/local/bin/ in your $PATH
-
-After you have installed the script with this method you can always update to
-the latest version of the script with the following command:
-
-    curl -L https://raw.github.com/manabutameni/Imgur/master/imgur.sh -o /usr/local/bin/imgur
+NOTE: This assumes you have /usr/local/bin/ in your $PATH.
+Most distributions do, but some do not.
 
 To use:  
-In any directory type: `imgur imgur.com/a/XXXXX`  
+In any directory type: `imgur imgur.com/a/XXXXX`
 
 #####KDE
 
