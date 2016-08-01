@@ -20,6 +20,18 @@ function main() {
     echo "$album_json" | jsawk 'return this.data.images' | jsawk -n 'out(this.link)'
   }
 
+  function get_image_id() {
+    echo "${@}" | grep --only 'i.imgur.com/[[:alnum:]]*' | awk -F/ '{print $2}'
+  }
+
+  function get_image_title() {
+    echo "$image_json" | jsawk 'return this.data.title'
+  }
+
+  function get_image_description() {
+    echo "$image_json" | jsawk 'return this.data.description'
+  }
+
   function continue_if_empty_var() {
     if [[ "$1" == "" ]]; then
       echo "There was an error with the album." 1>&2
@@ -68,10 +80,27 @@ function main() {
     for image in ${album_images[@]}; do
       continue_if_empty_var "$image"
       debug "$image"
+      image_id=$(get_image_id "$image")
+      image_json="$(api_call "image/$image_id")"
+      image_title="$(get_image_title "$image_json")"
+      image_description="$(get_image_description "$image_json")"
+      debug "$image_id: $image_title"
+      debug "$image_description"
       let "num += 1"
       filename="$(printf "%0${preceding_zeros}d" "$num").${image##*.}"
       debug "${album_name}/${filename}"
       curl -sL "$image" -o "${album_name}/${filename}"
+
+      if [[ "$download_text_flag" == true ]]; then
+        if [[ "${#image_title}" != 0 ]]; then
+          echo "$image_title" >> "${album_name}/${filename}.txt"
+          printf '%*s' "${#image_title}" | tr ' ' \# >> "${album_name}/${filename}.txt"
+          echo >> "${album_name}/${filename}.txt"
+        fi
+        if [[ "${#image_description}" != 0 ]]; then
+          echo "$image_description" >> "${album_name}/${filename}.txt"
+        fi
+      fi
 
       if [[ "$silent_flag" == false && "$num" != 0 && "$debug_flag" == false ]]; then
         percent="$(evaluate 2 "100 * $num / $number_of_images")"
@@ -106,6 +135,7 @@ OPTIONS
     -h        Show this message.
     -s        Silent mode. Overrides debug mode.
     -d        Debug mode. Overrides stdout.
+    -t        Download image text, if present.
 
 AUTHOR
     manabutameni
@@ -171,8 +201,9 @@ function progress_bar() {
 
 debug_flag=false
 silent_flag=false
+download_text_flag=false
 
-while getopts ":hdsp" OPTION; do
+while getopts ":hdstp" OPTION; do
   case $OPTION in
     h)
       long_description
@@ -183,6 +214,9 @@ while getopts ":hdsp" OPTION; do
       ;;
     s)
       silent_flag=true
+      ;;
+    t)
+      download_text_flag=true
       ;;
     *)
       stdout "Invalid option: '-$OPTARG'"
