@@ -9,12 +9,13 @@ Author:
 
 ##Usage
 
-    bash imgur.sh [-sd] URL [URL]
+    bash imgur.sh [-sdt] URL [URL]
 
     OPTIONS
         -h       Show this message.
         -s       Silent mode. Overrides debug mode.
         -d       Debug mode.
+        -t       Download image text, if present.
 
 Multiple albums can be downloaded like so: `bash imgur.sh URL1 URL2 ...`
 
