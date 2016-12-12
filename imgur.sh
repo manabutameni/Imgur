@@ -65,7 +65,7 @@ function main() {
       album_name="$album_id"
     fi
     continue_if_empty_var "$album_name"
-    debug "Album Name: \"$album_name\""
+    echo "Downloading Album: \"$album_name\""
 
     album_images=($(get_album_images "$album_id"))
     number_of_images="${#album_images[@]}"
