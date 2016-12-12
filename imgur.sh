@@ -73,7 +73,7 @@ function main() {
     debug "Number of Images: $number_of_images"
     debug "Number of Images According to Imgur: $(echo "$album_json" | jsawk 'return this.data.images_count')"
 
-    mkdir "$album_name"
+    mkdir "$album_name" || continue
 
     num=0
     let "preceding_zeros = $(echo $number_of_images | wc -c)"
