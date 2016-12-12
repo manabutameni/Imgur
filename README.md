@@ -26,6 +26,8 @@ Multiple albums can be downloaded like so: `bash imgur.sh URL1 URL2 ...`
   * [iconv](http://man7.org/linux/man-pages/man1/iconv.1.html)
   * [curl](http://curl.haxx.se/)
 
+  User @kanliot has reported (see #16) needing the `spidermonkey-bin` package for debian wheezy.
+
 ##Installation
 
 Go to the [imgur account settings page](https://imgur.com/account/settings/apps) and create an api key.
