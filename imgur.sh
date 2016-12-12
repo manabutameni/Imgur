@@ -3,7 +3,7 @@
 set -e
 
 # Declarations
-api="3c1a21006e8a7a9"
+api_key=""
 required=("bash" "curl" "bc" "jsawk" "iconv")
 version="1.0.0"
 
@@ -119,7 +119,7 @@ function main() {
 }
 
 function api_call() {
-  curl -s "https://api.imgur.com/3/${@}" --header "Authorization: Client-ID ${api}"
+  curl -s "https://api.imgur.com/3/${@}" --header "Authorization: Client-ID ${api_key}"
 }
 
 function long_description() {

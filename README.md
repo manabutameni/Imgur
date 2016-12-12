@@ -21,14 +21,17 @@ Multiple albums can be downloaded like so: `bash imgur.sh URL1 URL2 ...`
 
 ##Requirements
 
+  * [imgur api key](https://imgur.com/account/settings/apps)
   * [jsawk](https://github.com/micha/jsawk)
   * [iconv](http://man7.org/linux/man-pages/man1/iconv.1.html)
   * [curl](http://curl.haxx.se/)
 
-
 ##Installation
 
-This is only necessary if you want to run the script without having it in the
+Go to the [imgur account settings page](https://imgur.com/account/settings/apps) and create an api key.
+Copy and paste it onto [line 6](https://github.com/manabutameni/Imgur/blob/master/imgur.sh#L6) of imgur.sh.
+
+The following is only necessary if you want to run the script without having it in the
 same folder you want the imgur album, or if you want to install imgur.desktop
 for KDE.
 
