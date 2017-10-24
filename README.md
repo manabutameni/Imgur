@@ -1,4 +1,4 @@
-##About
+## About
 
 This is a 100% Bash script used to download imgur albums while making sure that
 the order of the pictures is retained.
@@ -7,7 +7,7 @@ Author:
     manabutameni  
     https://github.com/manabutameni/Imgur
 
-##Usage
+## Usage
 
     bash imgur.sh [-sdt] URL [URL]
 
@@ -19,7 +19,7 @@ Author:
 
 Multiple albums can be downloaded like so: `bash imgur.sh URL1 URL2 ...`
 
-##Requirements
+## Requirements
 
   * [imgur api key](https://imgur.com/account/settings/apps)
   * [jsawk](https://github.com/micha/jsawk)
@@ -28,7 +28,7 @@ Multiple albums can be downloaded like so: `bash imgur.sh URL1 URL2 ...`
 
   User @kanliot has reported (see #16) needing the `spidermonkey-bin` package for debian wheezy.
 
-##Installation
+## Installation
 
 Go to the [imgur account settings page](https://imgur.com/account/settings/apps) and create an api key.
 Copy and paste it onto [line 6](https://github.com/manabutameni/Imgur/blob/master/imgur.sh#L6) of imgur.sh.
@@ -46,7 +46,7 @@ Most distributions do, but some do not.
 To use:  
 In any directory type: `imgur imgur.com/a/XXXXX`
 
-#####KDE
+##### KDE
 
 Copy imgur.desktop to your local `kde4-config --path services` folder
 location and make sure it's executable. `chmod +x imgur.desktop`.
